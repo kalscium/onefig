@@ -8,15 +8,16 @@ flexar::lexer! {
     token_types {
         Apply => ">>";
         Dot => '.';
-        Not => "!";
+        Not => '!';
         EE => "==";
         NE => "!=";
         GTE => ">=";
-        GT => ">";
+        GT => '>';
         LTE => "<=";
-        LT => "<";
+        LT => '<';
+        Glob => '*';
 
-        Shell(_command: String) => "<shell command>";
+        Shell(_command: Box<[String]>) => "<shell command>";
         
         Set(is_eq: bool) => if *is_eq { '=' } else { ':' };
         Sep(is_semi: bool) => if *is_semi { ';' } else { ',' };
@@ -38,6 +39,7 @@ flexar::lexer! {
 
     [" \n\t"] >> ({ lext.advance(); lext = lext.spawn(); continue 'cycle; });
     Dot: .;
+    Glob: *;
 
     // Multi-char
     EE: (= =);
@@ -60,10 +62,13 @@ flexar::lexer! {
     // Shell commands
     $ child {
         advance:();
-        set cmd { String::new() };
-        rsome current {
-            if (current == '\n') { done Shell(cmd); };
-            { cmd.push(current) };
+        set cmd { Vec::new() };
+        set section { String::new() };
+        rsome (current, 'shell) {
+            { if " \n".contains(current) && !section.is_empty() { cmd.push(section); section = String::new() } }; // Split the command into sections without spaces
+            if (current == ' ') { advance:(); { continue 'shell }; }; // so that the space isn't included
+            if (current == '\n') { done Shell(cmd.into_boxed_slice()); }; // terminate command
+            { section.push(current) };
         };
     };
 
