@@ -1,4 +1,5 @@
 # Global varibles
+12;
 var env;
 env.nix-version: 23;
 conff git nixos: "/etc/nixos/configuration.nix";
