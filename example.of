@@ -1,0 +1,13 @@
+# Global varibles
+var env;
+env.nix-version: 23;
+conff git nixos: "/etc/nixos/configuration.nix";
+
+// Stuff for nix os
+# Yoo both kinds of comments work
+
+nixos >> {
+    version: (env.VERSION);
+}
+
+nixos$ sudo nixos-rebuild switch --upgrade;
