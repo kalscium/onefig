@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-flexar = "0.3.8"
+flexar = "0.3.11"
 clap = { version = "4.4.6", features = ["derive"] }
 
 [profile.dev.package."*"]

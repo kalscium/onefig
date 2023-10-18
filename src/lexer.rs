@@ -1,4 +1,4 @@
-use flexar::{self, Flext};
+use flexar::prelude::*;
 use crate::errors::SyntaxError;
 
 flexar::lexer! {

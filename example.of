@@ -1,5 +1,5 @@
 # Global varibles
-12.dave.name = 36;
+12."dave".name: value;
 var env;
 env.nix-version: 23;
 conff git nixos: "/etc/nixos/configuration.nix";
