@@ -32,9 +32,10 @@ flexar::lexer! {
         Bool(val: bool) => val;
         Conff => "conff";
         Var => "var";
-        
-        Str(x: String) => format!("{x:?}");
-        Int(x: u64) => format!("{x:?}");
+
+        Ident(x: String) => x;
+        Str(x: String) => x;
+        Int(x: usize) => x;
     }
 
     [" \n\t"] >> ({ lext.advance(); lext = lext.spawn(); continue 'cycle; });
@@ -100,6 +101,7 @@ flexar::lexer! {
 
     [":="] child {
         ck (current, =) {
+            advance:();
             done Set(true);
         };
         advance:();
@@ -123,7 +125,7 @@ flexar::lexer! {
         if (ident == "true") { done Bool(true); };
         if (ident == "false") { done Bool(false); };
 
-        done Str(ident);
+        done Ident(ident);
     };
 
     ["0123456789"] child { // Integers

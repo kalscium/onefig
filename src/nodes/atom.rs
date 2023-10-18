@@ -2,14 +2,14 @@ use flexar::{Flext, token_node::TokenToString};
 use crate::{lexer::Token, errors::SyntaxError};
 
 #[derive(Debug)]
-pub enum Literal {
-    Int(u64),
+pub enum Atom {
+    Int(usize),
     Str(String),
     Bool(bool),
 }
 
 flexar::parser! {
-    [[Literal] parxt: Token]
+    [[Atom] parxt: Token]
     parse {
         (Token::Int(x)) => (Int(*x));
         (Token::Bool(x)) => (Bool(*x));
