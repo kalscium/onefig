@@ -1,6 +1,6 @@
 use std::fs;
-use flexar::{lext::Lext, parxt::Parxt};
-use onefig::{lexer::Token, nodes::stmt::Stmt};
+use flexar::lext::Lext;
+use onefig::{lexer::Token, nodes::program::SourceFile};
 
 fn main() {
     let file = fs::read_to_string("example.of").unwrap();
@@ -10,5 +10,5 @@ fn main() {
         .collect::<Box<_>>()
     );
 
-    let _ = Stmt::parse(&mut Parxt::new(&tokens)).map_err(|x| x.1.throw::<()>());
+    SourceFile::parse(&tokens);
 }

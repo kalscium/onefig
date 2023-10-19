@@ -11,7 +11,9 @@ flexar::parser! {
     [[Stmt] parxt: Token]
     parse {
         [path: Path::parse] => {
-            (Token::Set(_)), [atom: Atom::parse] => (Config(path, atom));
+            (Token::Set(_)), [atom: Atom::parse] => {
+                (Token::Sep(_)) => (Config(path, atom));
+            } (else Ok(Self::Config(path, atom)))
         } (else Err((SY008, parxt.position()) parxt.current_token()))
     } else Err((SY007, parxt.position()) parxt.current_token());
 }
