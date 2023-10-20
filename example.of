@@ -1,9 +1,16 @@
 // Testing
-ethan.skills = [
+dave.name: "Dave Smith";
+dave.age = 23;
+dave.skills = [
     "programming"
     "people skills"
     "and other stuff"
 ];
+
+dave.dog = {
+    name: "Biscut",
+    age: 5,
+};
 
 # Global varibles
 12."dave".name: value;

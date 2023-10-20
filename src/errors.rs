@@ -14,4 +14,7 @@ flexar::compiler_error! {
     (SY010) "expected list": ((1) "expected list, found `", "`");
     (SY011) "expected `]` to terminate list": ((1) "expected `]`, found `", "`");
     (SY012) "expected shell command": ((1) "expected shell-cmd, found `", "`");
+    (SY013) "expected table": ((1) "expected table, found `", "`");
+    (SY014) "expected `}` to terminate table": ((1) "expected `}`, found `", "`");
+    (SY015) "expected configuration": ((1) "expected config, found `", "`");
 }

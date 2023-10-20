@@ -34,7 +34,7 @@ flexar::lexer! {
         Var => "var";
 
         Ident(x: Box<str>) => x;
-        Str(x: Box<str>) => x;
+        Str(x: Box<str>) => format!("\"{x}\"");
         Int(x: usize) => x;
     }
 
