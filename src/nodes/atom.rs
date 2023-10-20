@@ -1,6 +1,6 @@
 use flexar::prelude::*;
 use crate::{lexer::Token, errors::SyntaxError};
-use super::path::Path;
+use super::{path::Path, list::List};
 
 #[derive(Debug)]
 pub enum Atom {
@@ -8,11 +8,13 @@ pub enum Atom {
     Str(String),
     Bool(bool),
     Path(Node<Path>),
+    List(Box<Node<List>>),
 }
 
 flexar::parser! {
     [[Atom] parxt: Token]
     parse {
+        [list: List::parse] => (List(Box::new(list)));
         [path: Path::parse_w_error] => (Path(path));
         (Token::Int(x)) => (Int(*x));
         (Token::Bool(x)) => (Bool(*x));

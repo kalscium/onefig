@@ -11,4 +11,6 @@ flexar::compiler_error! {
     (SY007) "expected stmt": ((1) "expected stmt, found `", "`");
     (SY008) "expected asignment operator": ((1) "expected `:` or `=`, found `", "`");
     (SY009) "all paths must begin with identifer": ((2) "try using `\"", "\"` instead of `", "`");
+    (SY010) "expected list": ((1) "expected list, found `", "`");
+    (SY011) "expected `]` to terminate list": ((1) "expected `]`, found `", "`");
 }
