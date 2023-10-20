@@ -17,7 +17,7 @@ flexar::lexer! {
         LT => '<';
         Glob => '*';
 
-        Shell(_command: Box<[String]>) => "<shell command>";
+        Shell(_command: Box<[Box<str>]>) => "<shell command>";
         
         Set(is_eq: bool) => if *is_eq { '=' } else { ':' };
         Sep(is_semi: bool) => if *is_semi { ';' } else { ',' };
@@ -33,8 +33,8 @@ flexar::lexer! {
         Conff => "conff";
         Var => "var";
 
-        Ident(x: String) => x;
-        Str(x: String) => x;
+        Ident(x: Box<str>) => x;
+        Str(x: Box<str>) => x;
         Int(x: usize) => x;
     }
 
@@ -66,7 +66,7 @@ flexar::lexer! {
         set cmd { Vec::new() };
         set section { String::new() };
         rsome (current, 'shell) {
-            { if " \n".contains(current) && !section.is_empty() { cmd.push(section); section = String::new() } }; // Split the command into sections without spaces
+            { if " \n".contains(current) && !section.is_empty() { cmd.push(section.into_boxed_str()); section = String::new() } }; // Split the command into sections without spaces
             if (current == ' ') { advance:(); { continue 'shell }; }; // so that the space isn't included
             if (current == '\n') { done Shell(cmd.into_boxed_slice()); }; // terminate command
             { section.push(current) };
@@ -125,7 +125,7 @@ flexar::lexer! {
         if (ident == "true") { done Bool(true); };
         if (ident == "false") { done Bool(false); };
 
-        done Ident(ident);
+        done Ident(ident.into_boxed_str());
     };
 
     ["0123456789"] child { // Integers
@@ -149,7 +149,7 @@ flexar::lexer! {
             { if current == '\n' { break 'string; } };
             ck (current, '"') {
                 advance:();
-                done Str(string);
+                done Str(string.into_boxed_str());
             };
             ck (current, '\\') { // Escape characters
                 advance: current;

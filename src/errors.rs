@@ -13,4 +13,5 @@ flexar::compiler_error! {
     (SY009) "all paths must begin with identifer": ((2) "try using `\"", "\"` instead of `", "`");
     (SY010) "expected list": ((1) "expected list, found `", "`");
     (SY011) "expected `]` to terminate list": ((1) "expected `]`, found `", "`");
+    (SY012) "expected shell command": ((1) "expected shell-cmd, found `", "`");
 }

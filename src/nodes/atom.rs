@@ -5,7 +5,7 @@ use super::{path::Path, list::List};
 #[derive(Debug)]
 pub enum Atom {
     Int(usize),
-    Str(String),
+    Str(Box<str>),
     Bool(bool),
     Path(Node<Path>),
     List(Box<Node<List>>),
