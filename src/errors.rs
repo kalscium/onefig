@@ -17,4 +17,8 @@ flexar::compiler_error! {
     (SY013) "expected table": ((1) "expected table, found `", "`");
     (SY014) "expected `}` to terminate table": ((1) "expected `}`, found `", "`");
     (SY015) "expected configuration": ((1) "expected config, found `", "`");
+    (SY016) "expected expr": ((1) "expected expr, found `", "`");
+
+    [Meta Errors]
+    (SY404) "use of unimplemented or experimental feature": "unimplemented, experimental or unstable";
 }

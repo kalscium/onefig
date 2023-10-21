@@ -1,5 +1,6 @@
 // Testing
-dave.name: "Dave Smith";
+dave.name: "Dave";
+dave.full-name: (dave.name);
 dave.age = 23;
 dave.skills = [
     "programming"
