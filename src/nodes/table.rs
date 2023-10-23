@@ -22,6 +22,9 @@ flexar::parser! {
 
     table_item {
         [head: Stmt::parse] => {
+            (Sep(_)) => {
+                [tail: Self::table_item] => (Head(head, Box::new(tail)));
+            } (else Ok(Self::Tail(head)))
             [tail: Self::table_item] => (Head(head, Box::new(tail)));
         } (else Ok(Self::Tail(head)))
     } else Err(SY014: parxt.current_token());

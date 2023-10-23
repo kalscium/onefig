@@ -1,6 +1,5 @@
 // Testing
-dave.name: "Dave";
-dave.full-name: (dave.name);
+dave.name: "Dave Smith";
 dave.age = 23;
 dave.skills = [
     "programming"
@@ -14,10 +13,10 @@ dave.dog = {
 };
 
 # Global varibles
+conff nix nixos: "/etc/nixos/configuration.nix";
 12."dave".name: value;
 var env;
 env.nix-version: 23;
-conff git nixos: "/etc/nixos/configuration.nix";
 
 // Stuff for nix os
 # Yoo both kinds of comments work

@@ -1,5 +1,6 @@
 use flexar::prelude::*;
 use crate::{lexer::Token, errors::SyntaxError};
+use super::ident::Ident;
 
 #[derive(Debug)]
 pub enum Path {
@@ -19,11 +20,11 @@ impl Path {
 flexar::parser! {
     [[Path] parxt: Token]
     parse {
-        [head: Self::path_ident] => {
+        [head: Ident::parse] => {
             (Dot) => {
-                [tail: Self::parse] => (Head(head.node.get_head(), Box::new(tail)));
+                [tail: Self::parse] => (Head(head.node.0, Box::new(tail)));
             } (else Err(SY006: parxt.current_token()))
-        } (else Ok(head.node))
+        } (else Ok(Self::Tail(head.node.0)))
     } else Err(SY005: parxt.current_token());
 
     parse_w_error {
@@ -39,5 +40,5 @@ flexar::parser! {
         (Str(x)) => (Tail(x.clone()));
         (Int(x)) => (Tail(x.to_string().into_boxed_str()));
         (Bool(x)) => (Tail(x.to_string().into_boxed_str()));
-    } else Err(SY005: parxt.current_token());
+    } else Err(SY009: parxt.current_token(), parxt.current_token());
 }

@@ -7,7 +7,7 @@ flexar::compiler_error! {
     (SY003) "invalid escape character": "escape character `", "` is invalid";
     (SY004) "expected atom": "expected atom, found `", "`";
     (SY005) "expected path": "expected path, found `", "`";
-    (SY006) "expected path-identifier after dot": "expected path-ident, found `", "`";
+    (SY006) "expected identifier": "expected ident, found `", "`";
     (SY007) "expected stmt": "expected stmt, found `", "`";
     (SY008) "expected asignment operator": "expected `:` or `=`, found `", "`";
     (SY009) "all paths must begin with identifer": "try using `\"", "\"` instead of `", "`";
@@ -18,6 +18,8 @@ flexar::compiler_error! {
     (SY014) "expected `}` to terminate table": "expected `}`, found `", "`";
     (SY015) "expected configuration": "expected config, found `", "`";
     (SY016) "expected expr": "expected expr, found `", "`";
+    (SY017) "invalid config-file type (expected `toml`, `json` or `nix`)": "`", "` is an invalid conff type";
+    (SY018) "expected config-file type": "expected conff type, found `", "`";
 
     [Meta Errors]
     (SY404) "use of unimplemented or experimental feature": "unimplemented, experimental or unstable";

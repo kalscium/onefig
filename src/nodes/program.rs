@@ -17,6 +17,7 @@ impl SourceFile {
                 Ok(x) => x,
                 Err((_, x)) => x.throw(),
             });
+            if let Some(Token::Sep(_)) = parxt.current() { parxt.advance() };
         }
 
         Some(Self(stmts.into_boxed_slice()))
