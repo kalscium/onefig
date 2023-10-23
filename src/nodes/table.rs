@@ -12,17 +12,17 @@ pub enum Table {
 flexar::parser! {
     [[Table] parxt: Token]
     parse {
-        (Token::LBrace) => {
-            (Token::RBrace) => (Empty);
+        (LBrace) => {
+            (RBrace) => (Empty);
             [item: Self::table_item] => {
-                (Token::RBrace) => [item];
-            } (else Err((SY014, parxt.position()) parxt.current_token()))
+                (RBrace) => [item];
+            } (else Err(SY014: parxt.current_token()))
         };
-    } else Err((SY013, parxt.position()) parxt.current_token());
+    } else Err(SY013: parxt.current_token());
 
     table_item {
         [head: Stmt::parse] => {
             [tail: Self::table_item] => (Head(head, Box::new(tail)));
         } (else Ok(Self::Tail(head)))
-    } else Err((SY014, parxt.position()) parxt.current_token());
+    } else Err(SY014: parxt.current_token());
 }

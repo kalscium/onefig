@@ -7,6 +7,6 @@ pub enum Expr {}
 flexar::parser! {
     [[Expr] parxt: Token]
     parse {
-        (Token::LParen) => [compiler_error!((SY404, parxt.position())).throw()];
-    } else Err((SY015, parxt.position()) parxt.current_token());
+        (LParen) => [compiler_error!((SY404, parxt.position())).throw()];
+    } else Err(SY015: parxt.current_token());
 }

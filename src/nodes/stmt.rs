@@ -12,10 +12,10 @@ flexar::parser! {
     [[Stmt] parxt: Token]
     parse {
         [path: Path::parse] => {
-            (Token::Shell(shell)) => (Shell(path, shell.clone()));
-            (Token::Set(_)), [atom: Atom::parse] => {
-                (Token::Sep(_)) => (Config(path, atom));
+            (Shell(shell)) => (Shell(path, shell.clone()));
+            (Set(_)), [atom: Atom::parse] => {
+                (Sep(_)) => (Config(path, atom));
             } (else Ok(Self::Config(path, atom)))
-        } (else Err((SY008, parxt.position()) parxt.current_token()))
-    } else Err((SY007, parxt.position()) parxt.current_token());
+        } (else Err(SY008: parxt.current_token()))
+    } else Err(SY007: parxt.current_token());
 }

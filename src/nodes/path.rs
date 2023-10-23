@@ -20,24 +20,24 @@ flexar::parser! {
     [[Path] parxt: Token]
     parse {
         [head: Self::path_ident] => {
-            (Token::Dot) => {
+            (Dot) => {
                 [tail: Self::parse] => (Head(head.node.get_head(), Box::new(tail)));
-            } (else Err((SY006, parxt.position()) parxt.current_token()))
+            } (else Err(SY006: parxt.current_token()))
         } (else Ok(head.node))
-    } else Err((SY005, parxt.position()) parxt.current_token());
+    } else Err(SY005: parxt.current_token());
 
     parse_w_error {
-        (Token::Ident(head)) => {
-            (Token::Dot) => {
+        (Ident(head)) => {
+            (Dot) => {
                 [tail: Self::parse] => (Head(head.clone(), Box::new(tail)));
-            } (else Err((SY006, parxt.position()) parxt.current_token()))
+            } (else Err(SY006: parxt.current_token()))
         } (else Ok(Self::Tail(head.clone())))
-    } else Err((SY009, parxt.position()) parxt.current_token(), parxt.current_token());
+    } else Err(SY009: parxt.current_token(), parxt.current_token());
 
     path_ident {
-        (Token::Ident(x)) => (Tail(x.clone()));
-        (Token::Str(x)) => (Tail(x.clone()));
-        (Token::Int(x)) => (Tail(x.to_string().into_boxed_str()));
-        (Token::Bool(x)) => (Tail(x.to_string().into_boxed_str()));
-    } else Err((SY005, parxt.position()) parxt.current_token());
+        (Ident(x)) => (Tail(x.clone()));
+        (Str(x)) => (Tail(x.clone()));
+        (Int(x)) => (Tail(x.to_string().into_boxed_str()));
+        (Bool(x)) => (Tail(x.to_string().into_boxed_str()));
+    } else Err(SY005: parxt.current_token());
 }
