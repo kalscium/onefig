@@ -1,8 +1,6 @@
-use std::path::PathBuf;
-
 use flexar::prelude::*;
 use crate::{lexer::Token, errors::SyntaxError, conff::ConffType};
-use super::{path::Path, atom::Atom, ident::Ident};
+use super::{path::Path, atom::Atom};
 
 #[derive(Debug)]
 pub enum Stmt {
@@ -10,9 +8,10 @@ pub enum Stmt {
     Shell(Node<Path>, Box<[Box<str>]>),
     Conff {
         conff_type: ConffType,
-        ident: Box<str>,
-        path: Node<Atom>,
+        path: Node<Path>,
+        file_path: Node<Atom>,
     },
+    Var(Node<Path>),
 }
 
 flexar::parser! {
@@ -23,12 +22,14 @@ flexar::parser! {
             (Set(_)), [atom: Atom::parse] => (Config(path, atom));
         } (else Err(SY008: parxt.current_token()))
 
-        (Conff), [conff_type: ConffType::parse], [ident: Ident::parse] => {
+        (Conff), [conff_type: ConffType::parse], [path: Path::parse] => {
             (Set(_)), [atom: Atom::parse] => (Conff {
                 conff_type: conff_type.node,
-                ident: ident.node.0,
-                path: atom,
+                path,
+                file_path: atom,
             });
         } (else Err(SY008: parxt.current_token()))
+
+        (Var), [path: Path::parse] => (Var(path));
     } else Err(SY007: parxt.current_token());
 }
