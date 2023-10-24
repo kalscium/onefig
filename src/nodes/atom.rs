@@ -11,6 +11,7 @@ pub enum Atom {
     List(Box<Node<List>>),
     Table(Box<Node<Table>>),
     Expr(Box<Node<Expr>>),
+    Apply(Node<Path>, Box<Node<Atom>>),
 }
 
 flexar::parser! {
@@ -19,7 +20,9 @@ flexar::parser! {
         [expr: Expr::parse] => (Expr(Box::new(expr)));
         [table: Table::parse] => (Table(Box::new(table)));
         [list: List::parse] => (List(Box::new(list)));
-        [path: Path::parse_w_error] => (Path(path));
+        [path: Path::parse_w_error] => {
+            (Apply), [atom: Atom::parse] => (Apply(path, Box::new(atom)));
+        } (else Ok(Self::Path(path)))
         (Int(x)) => (Int(*x));
         (Bool(x)) => (Bool(*x));
         (Str(x)) => (Str(x.clone()));

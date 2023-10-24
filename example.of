@@ -21,8 +21,15 @@ env.nix-version: 23;
 // Stuff for nix os
 # Yoo both kinds of comments work
 
-nixos >> {
-    version: (env.VERSION);
+nixos: {
+    version: "20.05";
+    environment: pkgs >> [
+        // Installed packages
+        vscodium,
+        rustup,
+        docker,
+        helix,
+    ]
 }
 
 nixos$ sudo nixos-rebuild switch --upgrade;
