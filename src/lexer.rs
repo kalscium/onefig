@@ -18,6 +18,7 @@ flexar::lexer! {
         Glob => '*';
 
         Shell(_command: Box<[Box<str>]>) => "<shell command>";
+        RawConf(_conf: Box<str>) => "<raw configuration>";
         
         Set(is_eq: bool) => if *is_eq { '=' } else { ':' };
         Sep(is_semi: bool) => if *is_semi { ';' } else { ',' };
@@ -47,8 +48,6 @@ flexar::lexer! {
     Apply: (> >);
     GTE: (> =);
     GT: >;
-    LTE: (< =);
-    LT: <;
     NE: (! =);
     Not: !;
 
@@ -71,6 +70,31 @@ flexar::lexer! {
             if (current == '\n') { done Shell(cmd.into_boxed_slice()); }; // terminate command
             { section.push(current) };
         };
+    };
+
+    // Raw Configurations & operators
+    < child {
+        advance: current;
+        ck (current, =) { done LTE(); };
+        ck (current, /) {
+            advance:();
+            set conf { String::new() };
+            set section { String::new() };
+            rsome (current, 'raw) {
+                if (current == '\n') {
+                    if (section.trim() == "\\>") {
+                        done RawConf(conf.into_boxed_str());
+                    };
+                    { conf.push_str(&section) };
+                    { section = String::new() };
+                    advance:();
+                    { continue 'raw };
+                };
+                { section.push(current) };
+            };
+            
+        };
+        done LT();
     };
 
     // Comments

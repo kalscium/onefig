@@ -12,11 +12,14 @@ pub enum Stmt {
         file_path: Node<Atom>,
     },
     Var(Node<Path>),
+    RawConf(Box<str>),
 }
 
 flexar::parser! {
     [[Stmt] parxt: Token]
     parse {
+        (RawConf(x)) => (RawConf(x.clone()));
+
         [path: Path::parse] => {
             (Shell(shell)) => (Shell(path, shell.clone()));
             (Set(_)), [atom: Atom::parse] => (Config(path, atom));

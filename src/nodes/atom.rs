@@ -12,6 +12,7 @@ pub enum Atom {
     Table(Box<Node<Table>>),
     Expr(Box<Node<Expr>>),
     Apply(Node<Path>, Box<Node<Atom>>),
+    RawConf(Box<str>),
 }
 
 flexar::parser! {
@@ -26,5 +27,6 @@ flexar::parser! {
         (Int(x)) => (Int(*x));
         (Bool(x)) => (Bool(*x));
         (Str(x)) => (Str(x.clone()));
+        (RawConf(x)) => (RawConf(x.clone()));
     } else Err(SY004: parxt.current_token());
 }

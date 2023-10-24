@@ -20,6 +20,7 @@ flexar::compiler_error! {
     (SY016) "expected expr": "expected expr, found `", "`";
     (SY017) "invalid config-file type (expected `toml`, `json` or `nix`)": "`", "` is an invalid conff type";
     (SY018) "expected config-file type": "expected conff type, found `", "`";
+    (SY019) "non-terminated raw configuration": "expected `\\>` to terminate raw configuration";
 
     [Meta Errors]
     (SY404) "use of unimplemented or experimental feature": "unimplemented, experimental or unstable";
