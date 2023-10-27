@@ -2,7 +2,8 @@ use flexar::prelude::Position;
 use hashbrown::HashMap;
 use crate::errors::LogicError;
 
-pub struct ConfTable(HashMap<Box<str>, (Position, Value)>);
+pub type ConfHashMap = HashMap<Box<str>, (Position, Value)>;
+pub struct ConfTable(ConfHashMap);
 
 pub struct Config {
     pub position: Position,
@@ -34,23 +35,20 @@ impl ConfTable {
         Self(HashMap::new())
     }
 
-    pub fn set(&mut self, path: &mut Box<[Box<str>]>, value: Value, pos: Position) {
-        let mut current = &mut self.0;
+    pub fn set(&mut self, path: &[Box<str>], value: Value, pos: Position) {
+        if path.len() == 1 {
+            if let Some((first, _)) = self.0.insert(path[0].clone(), (pos.clone(), value)) {
+                flexar::compiler_error!((LG001, pos) path[0], first.0.ln).throw()
+            } return;
+        }
 
-        for (i, x) in path.iter().enumerate() {
-            if i != path.len()-1 {
-                if let Some((first, _)) = current.insert(x.clone(), (pos.clone(), Value::Table(ConfTable::new()))) {
-                    flexar::compiler_error!((LG001, pos.clone()) x, first.0.ln);
-                }
-                current = match &mut current.get_mut(x).unwrap().1 {
-                    Value::Table(a) => &mut a.0,
-                    _ => panic!("not possible"),
-                }
-            } else {
-                if let Some((first, _)) = current.insert(x.clone(), (pos.clone(), value)) {
-                    flexar::compiler_error!((LG001, pos) x, first.0.ln);
-                } break;
-            }
+        match self.0.get_mut(&path[0]) {
+            Some((_, Value::Table(x))) => x.set(&path[1..], value, pos),
+            Some((first, _)) => flexar::compiler_error!((LG001, pos) path[0], first.0.ln).throw(),
+            None => {
+                self.0.insert(path[0].clone(), (pos.clone(), Value::Table(ConfTable::new())));
+                self.set(path, value, pos);
+            },
         }
     }
 }
