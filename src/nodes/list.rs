@@ -29,3 +29,9 @@ flexar::parser! {
         } (else Ok(Self::Tail(head)))
     } else Err(SY011: parxt.current_token());
 }
+
+// impl VisitValue for Node<Atom> {
+//     fn visit(self, scope: Vec<Box<str>>) -> (Position, Value) {
+
+//     }
+// }

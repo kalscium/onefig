@@ -8,12 +8,21 @@ pub enum Path {
     Tail(Box<str>),
 }
 
-impl Path {
-    pub fn get_head(self) -> Box<str> {
-        match self {
-            Self::Head(x, _) => x,
-            Self::Tail(x) => x,
+impl Into<Box<[Box<str>]>> for Path {
+    fn into(self) -> Box<[Box<str>]> {
+        let mut current = self;
+        let mut out = Vec::new();
+        loop {
+            match current {
+                Self::Tail(x) => {out.push(x); break;},
+                Self::Head(x, y) => {
+                    out.push(x);
+                    current = y.node;
+                }
+            }
         }
+
+        out.into_boxed_slice()
     }
 }
 

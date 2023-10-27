@@ -1,6 +1,6 @@
 use std::fs;
 use flexar::lext::Lext;
-use onefig::{lexer::Token, nodes::program::SourceFile};
+use onefig::{lexer::Token, nodes::source_file::SourceFile};
 
 fn main() {
     let file = fs::read_to_string("example.of").unwrap();

@@ -25,3 +25,8 @@ flexar::compiler_error! {
     [Meta Errors]
     (SY404) "use of unimplemented or experimental feature": "unimplemented, experimental or unstable";
 }
+
+flexar::compiler_error! {
+    [[Define] LogicError]
+    (LG001) "key assigned to twice": "key `", "` assinged first at ln `", "`";
+}
