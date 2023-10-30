@@ -32,22 +32,27 @@ flexar::parser! {
 }
 
 impl VisitValue for Node<Atom> {
-    fn visit(self, _: &mut Visitor, _: &[Box<str>]) -> (Position, Value) {
-        todo!()
+    fn visit(self, visitor: &mut Visitor, scope: &[Box<str>]) -> (Position, Value) {
+        use Atom as A;
+        use Value::*;
+        (self.position, match self.node {
+            A::Int(x) => Int(x),
+            A::Bool(x) => Bool(x),
+            A::Str(x) => Value::String(x),
+            A::RawConf(x) => Raw(x),
+            
+            A::List(x) => return x.visit(visitor, scope),
+            A::Table(x) => return x.visit(visitor, scope),
+            A::Apply(p, x) => return x.visit(visitor, &Into::<Box<[Box<str>]>>::into(p.node)),
+            
+            A::Path(path) => {
+                let path: Box<[Box<str>]> = path.node.into();
+                let mut path = path.into_vec();
+                scope.iter().for_each(|x| path.insert(0, x.clone()));
+                Path(path.into_boxed_slice())
+            }
+
+            A::Expr(_) => todo!(), // can't panic as compiler error thrown before
+        })
     }
 }
-
-// impl VisitValue for Node<Atom> {
-//     fn visit(self, scope: Vec<Box<str>>) -> (Position, Value) {
-//         use Atom as A;
-//         use Value as V;
-//         (self.position, match self.node {
-//             A::Int(x) => V::Int(x),
-//             A::Str(x) => V::String(x),
-//             A::Bool(x) => V::Bool(x),
-//             A::RawConf(x) => V::Raw(x),
-//             // A::List(x) => V::List(),
-//             _ => todo!(),
-//         })
-//     }
-// }

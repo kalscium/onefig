@@ -14,7 +14,7 @@ impl From<Path> for Box<[Box<str>]> {
         let mut out = Vec::new();
         loop {
             match current {
-                Path::Tail(x) => {out.push(x); break;},
+                Path::Tail(x) => { out.push(x); break },
                 Path::Head(x, y) => {
                     out.push(x);
                     current = y.node;
