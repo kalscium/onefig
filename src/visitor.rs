@@ -1,22 +1,23 @@
 use flexar::prelude::Position;
 use hashbrown::HashMap;
-use crate::errors::LogicError;
+use crate::{errors::LogicError, conff::ConffType};
 
-pub type ConfHashMap = HashMap<Box<str>, (Position, Value)>;
-pub trait ConfTable {
-    fn set(&mut self, path: &[Box<str>], value: Value, pos: Position);
+pub struct Visitor {
+    pub conff_list: Vec<(ConffType, Path, Box<str>)>,
+    pub shell_list: Vec<(Path, Box<[Box<str>]>)>,
 }
 
-pub struct Config {
-    pub position: Position,
-    path: Box<[Box<str>]>,
-    value: (Position, Value),
+pub type ConfHashMap = HashMap<Box<str>, (Position, Value)>;
+pub type Path = Box<[Box<str>]>;
+
+pub trait ConfTable {
+    fn set(&mut self, path: &[Box<str>], value: Value, pos: Position);
 }
 
 pub enum Value {
     String(Box<str>),
     Int(usize),
-    Path(Box<[Box<str>]>),
+    Path(Path),
     Bool(bool),
     List(Box<[(Position, Value)]>),
     Table(ConfHashMap),
@@ -24,11 +25,11 @@ pub enum Value {
 }
 
 pub trait VisitValue {
-    fn visit(self, map: &mut ConfHashMap, scope: Box<[Box<str>]>);
+    fn visit(self, scope: &[Box<str>]) -> Value;
 }
 
 pub trait VisitConfig {
-    fn visit(self, map: &mut ConfHashMap, scope: Box<[Box<str>]>) -> Config;
+    fn visit(self, visitor: &mut Visitor, map: &mut ConfHashMap, scope: &[Box<str>]);
 }
 
 impl ConfTable for ConfHashMap {

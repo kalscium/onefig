@@ -1,5 +1,5 @@
 use flexar::prelude::*;
-use crate::{lexer::Token, errors::SyntaxError, conff::ConffType};
+use crate::{lexer::Token, errors::SyntaxError, conff::ConffType, visitor::{VisitConfig, Visitor, ConfHashMap, VisitValue, ConfTable}};
 use super::{path::Path, atom::Atom};
 
 #[derive(Debug)]
@@ -12,14 +12,11 @@ pub enum Stmt {
         file_path: Node<Atom>,
     },
     Var(Node<Path>),
-    RawConf(Box<str>),
 }
 
 flexar::parser! {
     [[Stmt] parxt: Token]
     parse {
-        (RawConf(x)) => (RawConf(x.clone()));
-
         [path: Path::parse] => {
             (Shell(shell)) => (Shell(path, shell.clone()));
             (Set(_)), [atom: Atom::parse] => (Config(path, atom));
@@ -35,4 +32,27 @@ flexar::parser! {
 
         (Var), [path: Path::parse] => (Var(path));
     } else Err(SY007: parxt.current_token());
+}
+
+impl VisitConfig for Node<Stmt> {
+    fn visit(self, visitor: &mut Visitor, map: &mut ConfHashMap, scope: &[Box<str>]) {
+        use Stmt as S;
+        match self.node {
+            S::Var(_) => (), // varibles will just be dropped for now
+            S::Shell(path, cmd) => visitor.shell_list.push((path.node.into(), cmd)),
+            S::Conff { // Config File
+                conff_type,
+                path,
+                file_path
+            } => visitor.conff_list.push((conff_type, path.node.into(), match file_path.node {
+                Atom::Str(x) => x,
+                _ => compiler_error!((SY404, self.position)).throw(),
+            })),
+            S::Config(path, value) => map.set(
+                &Into::<Box<[Box<str>]>>::into(path.node),
+                value.visit(scope),
+                self.position
+            ),
+        }
+    }
 }

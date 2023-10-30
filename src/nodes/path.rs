@@ -8,14 +8,14 @@ pub enum Path {
     Tail(Box<str>),
 }
 
-impl Into<Box<[Box<str>]>> for Path {
-    fn into(self) -> Box<[Box<str>]> {
-        let mut current = self;
+impl From<Path> for Box<[Box<str>]> {
+    fn from(path: Path) -> Self {
+        let mut current = path;
         let mut out = Vec::new();
         loop {
             match current {
-                Self::Tail(x) => {out.push(x); break;},
-                Self::Head(x, y) => {
+                Path::Tail(x) => {out.push(x); break;},
+                Path::Head(x, y) => {
                     out.push(x);
                     current = y.node;
                 }

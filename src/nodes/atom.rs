@@ -31,6 +31,12 @@ flexar::parser! {
     } else Err(SY004: parxt.current_token());
 }
 
+impl VisitValue for Node<Atom> {
+    fn visit(self, _: &[Box<str>]) -> Value {
+        todo!()
+    }
+}
+
 // impl VisitValue for Node<Atom> {
 //     fn visit(self, scope: Vec<Box<str>>) -> (Position, Value) {
 //         use Atom as A;
