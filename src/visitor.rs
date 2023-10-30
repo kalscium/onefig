@@ -25,7 +25,7 @@ pub enum Value {
 }
 
 pub trait VisitValue {
-    fn visit(self, scope: &[Box<str>]) -> Value;
+    fn visit(self, scope: &[Box<str>]) -> (Position, Value);
 }
 
 pub trait VisitConfig {

@@ -32,7 +32,7 @@ flexar::parser! {
 }
 
 impl VisitValue for Node<Atom> {
-    fn visit(self, _: &[Box<str>]) -> Value {
+    fn visit(self, _: &[Box<str>]) -> (Position, Value) {
         todo!()
     }
 }

@@ -1,5 +1,5 @@
 use flexar::prelude::*;
-use crate::{lexer::Token, errors::SyntaxError};
+use crate::{lexer::Token, errors::SyntaxError, visitor::{VisitValue, Value}};
 use super::atom::Atom;
 
 #[derive(Debug)]
@@ -30,8 +30,21 @@ flexar::parser! {
     } else Err(SY011: parxt.current_token());
 }
 
-// impl VisitValue for Node<Atom> {
-//     fn visit(self, scope: Vec<Box<str>>) -> (Position, Value) {
+impl VisitValue for Node<List> {
+    fn visit(self, scope: &[Box<str>]) -> (Position, Value) {
+        let mut current = self.node;
+        let mut out = Vec::new();
+        loop {
+            match current {
+                List::Empty => break,
+                List::Tail(x) => { out.push(x.visit(scope)); break },
+                List::Head(x, y) => {
+                    out.push(x.visit(scope));
+                    current = y.node;
+                },
+            }
+        }
 
-//     }
-// }
+        (self.position, Value::List(out.into_boxed_slice()))
+    }
+}

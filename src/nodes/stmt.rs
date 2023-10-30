@@ -48,11 +48,11 @@ impl VisitConfig for Node<Stmt> {
                 Atom::Str(x) => x,
                 _ => compiler_error!((SY404, self.position)).throw(),
             })),
-            S::Config(path, value) => map.set(
+            S::Config(path, value) => {let atom = value.visit(scope); map.set(
                 &Into::<Box<[Box<str>]>>::into(path.node),
-                value.visit(scope),
-                self.position
-            ),
+                atom.1,
+                atom.0
+            )},
         }
     }
 }
