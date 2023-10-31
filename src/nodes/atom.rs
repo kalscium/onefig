@@ -1,5 +1,5 @@
 use flexar::prelude::*;
-use crate::{lexer::Token, errors::SyntaxError, visitor::{VisitValue, Value, Visitor}};
+use crate::{lexer::Token, errors::SyntaxError, visitor::{VisitValue, Value, ActionTree}};
 use super::{path::Path, list::List, table::Table, expr::Expr};
 
 #[derive(Debug)]
@@ -32,7 +32,7 @@ flexar::parser! {
 }
 
 impl VisitValue for Node<Atom> {
-    fn visit(self, visitor: &mut Visitor, scope: &[Box<str>]) -> (Position, Value) {
+    fn visit(self, visitor: &mut ActionTree, scope: &[Box<str>]) -> (Position, Value) {
         use Atom as A;
         use Value::*;
         (self.position, match self.node {

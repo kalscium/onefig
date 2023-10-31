@@ -10,5 +10,6 @@ fn main() {
         .collect::<Box<_>>()
     );
 
-    SourceFile::parse(&tokens);
+    let nodes = SourceFile::parse(&tokens);
+    let _action_tree = nodes.visit();
 }

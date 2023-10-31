@@ -2,9 +2,22 @@ use flexar::prelude::Position;
 use hashbrown::HashMap;
 use crate::{errors::LogicError, conff::ConffType};
 
-pub struct Visitor {
+#[derive(Debug)]
+pub struct ActionTree {
     pub conff_list: Vec<(ConffType, Path, Box<str>)>,
     pub shell_list: Vec<(Path, Box<[Box<str>]>)>,
+    pub universal_set: ConfHashMap,
+}
+
+impl ActionTree {
+    #[inline]
+    pub fn new() -> Self {
+        Self {
+            conff_list: Vec::new(),
+            shell_list: Vec::new(),
+            universal_set: ConfHashMap::new(),
+        }
+    }
 }
 
 pub type ConfHashMap = HashMap<Box<str>, (Position, Value)>;
@@ -14,6 +27,7 @@ pub trait ConfTable {
     fn set(&mut self, path: &[Box<str>], value: Value, pos: Position);
 }
 
+#[derive(Debug)]
 pub enum Value {
     String(Box<str>),
     Int(usize),
@@ -25,11 +39,11 @@ pub enum Value {
 }
 
 pub trait VisitValue {
-    fn visit(self, visitor: &mut Visitor, scope: &[Box<str>]) -> (Position, Value);
+    fn visit(self, visitor: &mut ActionTree, scope: &[Box<str>]) -> (Position, Value);
 }
 
 pub trait VisitConfig {
-    fn visit(self, visitor: &mut Visitor, map: &mut ConfHashMap, scope: &[Box<str>]);
+    fn visit(self, visitor: &mut ActionTree, map: &mut ConfHashMap, scope: &[Box<str>]);
 }
 
 impl ConfTable for ConfHashMap {

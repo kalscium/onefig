@@ -1,5 +1,5 @@
 use flexar::prelude::*;
-use crate::{lexer::Token, errors::SyntaxError, conff::ConffType, visitor::{VisitConfig, Visitor, ConfHashMap, VisitValue, ConfTable}};
+use crate::{lexer::Token, errors::SyntaxError, conff::ConffType, visitor::{VisitConfig, ActionTree, ConfHashMap, VisitValue, ConfTable}};
 use super::{path::Path, atom::Atom};
 
 #[derive(Debug)]
@@ -35,7 +35,7 @@ flexar::parser! {
 }
 
 impl VisitConfig for Node<Stmt> {
-    fn visit(self, visitor: &mut Visitor, map: &mut ConfHashMap, scope: &[Box<str>]) {
+    fn visit(self, visitor: &mut ActionTree, map: &mut ConfHashMap, scope: &[Box<str>]) {
         use Stmt as S;
         match self.node {
             S::Var(_) => (), // varibles will just be dropped for now
