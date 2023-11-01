@@ -47,9 +47,12 @@ impl VisitValue for Node<Atom> {
             
             A::Path(path) => {
                 let path: Box<[Box<str>]> = path.node.into();
-                let mut path = path.into_vec();
-                scope.iter().for_each(|x| path.insert(0, x.clone()));
-                Path(path.into_boxed_slice())
+
+                let mut out = Vec::new();
+                scope.clone_into(&mut out);
+                out.append(&mut path.into_vec());
+
+                Path(out.into_boxed_slice())
             }
 
             A::Expr(_) => todo!(), // can't panic as compiler error thrown before
