@@ -8,16 +8,15 @@ pub enum Path {
     Tail(Box<str>),
 }
 
-impl From<Path> for Box<[Box<str>]> {
-    fn from(path: Path) -> Self {
-        let mut current = path;
+impl Path {
+    pub fn flatten(mut this: Node<Path>) -> Box<[(Position, Box<str>)]> {
         let mut out = Vec::new();
         loop {
-            match current {
-                Path::Tail(x) => { out.push(x); break },
+            match this.node {
+                Path::Tail(x) => { out.push((this.position, x)); break },
                 Path::Head(x, y) => {
-                    out.push(x);
-                    current = y.node;
+                    out.push((this.position, x));
+                    this = *y;
                 }
             }
         }
@@ -33,7 +32,7 @@ flexar::parser! {
             (Dot) => {
                 [tail: Self::parse] => (Head(head.node.0, Box::new(tail)));
             } (else Err(SY006: parxt.current_token()))
-        } (else Ok(Self::Tail(head.node.0)))
+        } (else Raw(Ok(Node::new(head.position, Self::Tail(head.node.0)))))
     } else Err(SY005: parxt.current_token());
 
     parse_w_error {

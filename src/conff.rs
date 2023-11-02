@@ -19,7 +19,7 @@ impl ConfFile {
             let file_path = PathBuf::from(file_path.to_string());
             {
                 let mut current = &mut att.uni_table;
-                for (i, key) in path.iter().enumerate() {
+                for (i, (_, key)) in path.iter().enumerate() {
                     current = patt_unwrap!((current.get_mut(key)) Some((_, Value::Table(x))) => x); // path must and will be valid
                 }
             }

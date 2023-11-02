@@ -32,7 +32,7 @@ flexar::parser! {
 }
 
 impl VisitValue for Node<Atom> {
-    fn visit(self, visitor: &mut ActionTree, scope: &[Box<str>]) -> (Position, Value) {
+    fn visit(self, visitor: &mut ActionTree, scope: &[(Position, Box<str>)]) -> (Position, Value) {
         use Atom as A;
         use Value::*;
         (self.position, match self.node {
@@ -43,10 +43,10 @@ impl VisitValue for Node<Atom> {
             
             A::List(x) => return x.visit(visitor, scope),
             A::Table(x) => return x.visit(visitor, scope),
-            A::Apply(p, x) => return x.visit(visitor, &Into::<Box<[Box<str>]>>::into(p.node)),
+            A::Apply(p, x) => return x.visit(visitor, &super::path::Path::flatten(p)),
             
             A::Path(path) => {
-                let path: Box<[Box<str>]> = path.node.into();
+                let path = super::path::Path::flatten(path);
 
                 let mut out = Vec::new();
                 scope.clone_into(&mut out);

@@ -35,21 +35,21 @@ flexar::parser! {
 }
 
 impl VisitConfig for Node<Stmt> {
-    fn visit(self, visitor: &mut ActionTree, map: &mut ConfHashMap, scope: &[Box<str>]) {
+    fn visit(self, visitor: &mut ActionTree, map: &mut ConfHashMap, scope: &[(Position, Box<str>)]) {
         use Stmt as S;
         match self.node {
             S::Var(_) => (), // varibles will just be dropped for now
-            S::Shell(path, cmd) => visitor.shell_list.push((path.node.into(), cmd)),
+            S::Shell(path, cmd) => visitor.shell_list.push((Path::flatten(path), cmd)),
             S::Conff { // Config File
                 conff_type,
                 path,
                 file_path
-            } => visitor.conff_list.push((conff_type, path.node.into(), match file_path.node {
+            } => visitor.conff_list.push((conff_type, Path::flatten(path), match file_path.node {
                 Atom::Str(x) => x,
                 _ => compiler_error!((SY404, self.position)).throw(),
             })),
             S::Config(path, value) => {let atom = value.visit(visitor, scope); map.set(
-                &Into::<Box<[Box<str>]>>::into(path.node),
+                &Path::flatten(path),
                 atom.1,
                 atom.0
             )},

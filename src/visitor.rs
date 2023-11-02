@@ -21,10 +21,10 @@ impl ActionTree {
 }
 
 pub type ConfHashMap = HashMap<Box<str>, (Position, Value)>;
-pub type Path = Box<[Box<str>]>;
+pub type Path = Box<[(Position, Box<str>)]>;
 
 pub trait ConfTable {
-    fn set(&mut self, path: &[Box<str>], value: Value, pos: Position);
+    fn set(&mut self, path: &[(Position, Box<str>)], value: Value, pos: Position);
 }
 
 #[derive(Debug)]
@@ -39,29 +39,29 @@ pub enum Value {
 }
 
 pub trait VisitValue {
-    fn visit(self, visitor: &mut ActionTree, scope: &[Box<str>]) -> (Position, Value);
+    fn visit(self, visitor: &mut ActionTree, scope: &[(Position, Box<str>)]) -> (Position, Value);
 }
 
 pub trait VisitConfig {
-    fn visit(self, visitor: &mut ActionTree, map: &mut ConfHashMap, scope: &[Box<str>]);
+    fn visit(self, visitor: &mut ActionTree, map: &mut ConfHashMap, scope: &[(Position, Box<str>)]);
 }
 
 impl ConfTable for ConfHashMap {
     #[inline]
-    fn set(&mut self, path: &[Box<str>], value: Value, pos: Position) {
+    fn set(&mut self, path: &[(Position, Box<str>)], value: Value, pos: Position) {
         if path.len() == 1 {
-            match (self.get_mut(&path[0]), value) {
+            match (self.get_mut(&path[0].1), value) {
                 (Some((_, Value::Table(x))), Value::Table(y)) => x.extend(y),
-                (Some((first, _)), _) => flexar::compiler_error!((LG001, pos) path[0], first.0.ln).throw(),
-                (None, value) => {self.insert(path[0].clone(), (pos.clone(), value));},
+                (Some((first, _)), _) => flexar::compiler_error!((LG001, path[0].0.clone()) path[0].1, first.0.ln).throw(),
+                (None, value) => {self.insert(path[0].1.clone(), (pos.clone(), value));},
             }; return;
         }
 
-        match self.get_mut(&path[0]) {
+        match self.get_mut(&path[0].1) {
             Some((_, Value::Table(x))) => x.set(&path[1..], value, pos),
-            Some((first, _)) => flexar::compiler_error!((LG001, pos) path[0], first.0.ln).throw(),
+            Some((first, _)) => flexar::compiler_error!((LG001, path[0].0.clone()) path[0].1, first.0.ln).throw(),
             None => {
-                self.insert(path[0].clone(), (pos.clone(), Value::Table(ConfHashMap::new())));
+                self.insert(path[0].1.clone(), (pos.clone(), Value::Table(ConfHashMap::new())));
                 self.set(path, value, pos);
             },
         }

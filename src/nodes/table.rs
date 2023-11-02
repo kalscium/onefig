@@ -31,7 +31,7 @@ flexar::parser! {
 }
 
 impl VisitValue for Node<Table> {
-    fn visit(self, visitor: &mut ActionTree, scope: &[Box<str>]) -> (Position, Value) {
+    fn visit(self, visitor: &mut ActionTree, scope: &[(Position, Box<str>)]) -> (Position, Value) {
         let mut current = self.node;
         let mut out = ConfHashMap::new();
 
