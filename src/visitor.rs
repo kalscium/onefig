@@ -6,7 +6,7 @@ use crate::{errors::LogicError, conff::ConffType};
 pub struct ActionTree {
     pub conff_list: Vec<(ConffType, Path, Box<str>)>,
     pub shell_list: Vec<(Path, Box<[Box<str>]>)>,
-    pub universal_set: ConfHashMap,
+    pub uni_table: ConfHashMap,
 }
 
 impl ActionTree {
@@ -15,7 +15,7 @@ impl ActionTree {
         Self {
             conff_list: Vec::new(),
             shell_list: Vec::new(),
-            universal_set: ConfHashMap::new(),
+            uni_table: ConfHashMap::new(),
         }
     }
 }
@@ -47,11 +47,14 @@ pub trait VisitConfig {
 }
 
 impl ConfTable for ConfHashMap {
+    #[inline]
     fn set(&mut self, path: &[Box<str>], value: Value, pos: Position) {
         if path.len() == 1 {
-            if let Some((first, _)) = self.insert(path[0].clone(), (pos.clone(), value)) {
-                flexar::compiler_error!((LG001, pos) path[0], first.0.ln).throw()
-            } return;
+            match (self.get_mut(&path[0]), value) {
+                (Some((_, Value::Table(x))), Value::Table(y)) => x.extend(y),
+                (Some((first, _)), _) => flexar::compiler_error!((LG001, pos) path[0], first.0.ln).throw(),
+                (None, value) => {self.insert(path[0].clone(), (pos.clone(), value));},
+            }; return;
         }
 
         match self.get_mut(&path[0]) {

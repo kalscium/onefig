@@ -25,13 +25,13 @@ impl SourceFile {
 
     pub fn visit(self) -> ActionTree {
         let mut visitor = ActionTree::new();
-        let mut universal_set = ConfHashMap::new();
+        let mut uni_table = ConfHashMap::new();
 
         for i in self.0.into_vec().into_iter() {
-            i.visit(&mut visitor, &mut universal_set, &[])
+            i.visit(&mut visitor, &mut uni_table, &[])
         }
 
-        visitor.universal_set = universal_set;
+        visitor.uni_table = uni_table;
         visitor
     }
 }

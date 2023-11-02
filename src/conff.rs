@@ -1,7 +1,35 @@
+use std::path::PathBuf;
 use flexar::{prelude::*, compile_error::CompileError};
-use crate::{lexer::Token, errors::SyntaxError};
+use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, Value}, patt_unwrap};
 
 #[derive(Debug)]
+pub struct ConfFile {
+    pub conff_type: ConffType,
+    pub table: ConfHashMap,
+    pub path: PathBuf,
+    pub shell: Box<[Box<[Box<str>]>]>,
+}
+
+impl ConfFile {
+    /// Gets a boxed slice of conffiles from a `Action Tree` (or att for short)
+    pub fn from_att(mut att: ActionTree) -> Box<[Self]> {
+        let out = Vec::new();
+
+        for (conff_type, path, file_path) in att.conff_list.iter() {
+            let file_path = PathBuf::from(file_path.to_string());
+            {
+                let mut current = &mut att.uni_table;
+                for (i, key) in path.iter().enumerate() {
+                    current = patt_unwrap!((current.get_mut(key)) Some((_, Value::Table(x))) => x); // path must and will be valid
+                }
+            }
+        }
+
+        out.into_boxed_slice()
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
 pub enum ConffType {
     Toml,
     Json,

@@ -23,7 +23,7 @@ env.nix-version: 23;
 
 nixos: {
     version: "20.05";
-    environment: pkgs >> [
+    environment.systemPackages: pkgs >> [
         // Overrides
         </
             (pkgs.vscodium.overrideAttrs (oldAttrs: rec {
