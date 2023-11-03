@@ -51,7 +51,10 @@ impl ConfTable for ConfHashMap {
     fn set(&mut self, path: &[(Position, Box<str>)], value: Value, pos: Position) {
         if path.len() == 1 {
             match (self.get_mut(&path[0].1), value) {
-                (Some((_, Value::Table(x))), Value::Table(y)) => x.extend(y),
+                (Some((_, Value::Table(t1))), Value::Table(t2)) => t2.into_iter()
+                    .for_each(|(k, (v_pos, v_value))| if let Some(first) = t1.insert(k.clone(), (v_pos.clone(), v_value)) {
+                        flexar::compiler_error!((LG001, v_pos) k, first.0.0.ln).throw()
+                    }),
                 (Some((first, _)), _) => flexar::compiler_error!((LG001, path[0].0.clone()) path[0].1, first.0.ln).throw(),
                 (None, value) => {self.insert(path[0].1.clone(), (pos.clone(), value));},
             }; return;

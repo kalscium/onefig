@@ -7,10 +7,12 @@ dave.skills = [
     "and other stuff"
 ];
 
-dave.dog = 86; 
+dave.dog.name = 86;
 
-dave.dog.name = "Biscut"; # should throw error
-dave.dog.age = 5;
+dave.dog: {
+    name = "Biscut"; # should throw error
+    age = 5;
+}
 
 # Global varibles
 conff nix nixos: "/etc/nixos/configuration.nix";
