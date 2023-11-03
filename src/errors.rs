@@ -28,5 +28,5 @@ flexar::compiler_error! {
 
 flexar::compiler_error! {
     [[Define] LogicError]
-    (LG001) "key assigned to twice": "key `", "` assinged first at ln `", "`";
+    (LG001) "key assigned to twice": "key `", "` first assignment at ln `", "`";
 }

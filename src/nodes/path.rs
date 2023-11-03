@@ -2,7 +2,7 @@ use flexar::prelude::*;
 use crate::{lexer::Token, errors::SyntaxError};
 use super::ident::Ident;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Path {
     Head(Box<str>, Box<Node<Path>>),
     Tail(Box<str>),

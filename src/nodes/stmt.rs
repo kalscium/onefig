@@ -1,5 +1,5 @@
 use flexar::prelude::*;
-use crate::{lexer::Token, errors::SyntaxError, conff::ConffType, visitor::{VisitConfig, ActionTree, ConfHashMap, VisitValue, ConfTable}};
+use crate::{lexer::Token, errors::SyntaxError, conff::ConffType, visitor::{VisitConfig, ActionTree, ConfHashMap, VisitValue, ConfTable, Value}};
 use super::{path::Path, atom::Atom};
 
 #[derive(Debug)]
@@ -44,10 +44,13 @@ impl VisitConfig for Node<Stmt> {
                 conff_type,
                 path,
                 file_path
-            } => visitor.conff_list.push((conff_type, Path::flatten(path), match file_path.node {
-                Atom::Str(x) => x,
-                _ => compiler_error!((SY404, self.position)).throw(),
-            })),
+            } => {
+                visitor.conff_list.push((conff_type, Path::flatten(path.clone()), match file_path.node {
+                    Atom::Str(x) => x,
+                    _ => compiler_error!((SY404, self.position.clone())).throw(),
+                }));
+                map.set(&Path::flatten(path), Value::Table(ConfHashMap::new()), self.position.clone());
+            },
             S::Config(path, value) => {let atom = value.visit(visitor, scope); map.set(
                 &Path::flatten(path),
                 atom.1,

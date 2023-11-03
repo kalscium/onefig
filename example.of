@@ -10,7 +10,7 @@ dave.skills = [
 dave.dog.name = 86;
 
 dave.dog: {
-    name = "Biscut"; # should throw error
+    # name = "Biscut"; // should throw error
     age = 5;
 }
 
@@ -22,6 +22,8 @@ env.nix-version: 23;
 
 // Stuff for nix os
 # Yoo both kinds of comments work
+
+# nixos = "not a table" // should throw error
 
 nixos: {
     version: "20.05";
