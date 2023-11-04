@@ -1,7 +1,7 @@
 use std::{path::PathBuf, mem::replace};
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
-use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, Value}, patt_unwrap};
+use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, Value}, patt_unwrap, target_lang::{json, toml}};
 
 #[derive(Debug)]
 pub struct ConfFile {
@@ -44,9 +44,9 @@ impl ConfFile {
             // (Each config langauge might have different features)
             use ConffType as CFT;
             match conff_type {
-                CFT::Json => todo!(),
-                CFT::Toml => todo!(),
-                CFT::Nix => todo!(), 
+                CFT::Json => json::check_table(&table),
+                CFT::Toml => toml::check_table(&table),
+                CFT::Nix => (), // everything in the language is supported in nix 
             }
             
             out.push(ConfFile {
