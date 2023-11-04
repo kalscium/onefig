@@ -1,11 +1,12 @@
 use std::{path::PathBuf, mem::replace};
 use flexar::{prelude::*, compile_error::CompileError};
+use hashbrown::HashMap;
 use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, Value}, patt_unwrap};
 
 #[derive(Debug)]
 pub struct ConfFile {
     pub conff_type: ConffType,
-    pub table: ConfHashMap,
+    pub table: HashMap<Box<str>, Value>,
     pub path: PathBuf,
     pub shell: Box<[Box<[Box<str>]>]>,
 }
@@ -38,10 +39,19 @@ impl ConfFile {
                 }
                 shell_cmds.into_boxed_slice()
             };
+
+            // Check validity of configs for each target config language
+            // (Each config langauge might have different features)
+            use ConffType as CFT;
+            match conff_type {
+                CFT::Json => todo!(),
+                CFT::Toml => todo!(),
+                CFT::Nix => todo!(), 
+            }
             
             out.push(ConfFile {
                 conff_type: replace(conff_type, ConffType::Json),
-                table,
+                table: table.into_iter().map(|(k, (_, x))| (k, x)).collect(),
                 path: file_path,
                 shell,
             })
