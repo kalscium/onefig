@@ -32,7 +32,7 @@ impl ConfFile {
             let shell = {
                 let mut shell_cmds = Vec::new();
                 for (s_path, cmd) in att.shell_list.iter_mut() {
-                    if path == s_path {shell_cmds.push( // eq operation might work..?
+                    if path.iter().map(|(_, x)| x).collect::<Vec<_>>() == s_path.iter().map(|(_, x)| x).collect::<Vec<_>>() {shell_cmds.push(
                         replace(cmd, Box::new([]))
                     )}
                 }
