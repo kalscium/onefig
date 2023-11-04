@@ -32,7 +32,7 @@ flexar::parser! {
             (Dot) => {
                 [tail: Self::parse] => (Head(head.node.0, Box::new(tail)));
             } (else Err(SY006: parxt.current_token()))
-        } (else Raw(Ok(Node::new(head.position, Self::Tail(head.node.0)))))
+        } (else Ok(Self::Tail(head.node.0)))
     } else Err(SY005: parxt.current_token());
 
     parse_w_error {

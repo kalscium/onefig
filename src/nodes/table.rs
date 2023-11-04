@@ -1,5 +1,5 @@
 use flexar::prelude::*;
-use crate::{lexer::Token, errors::SyntaxError, visitor::{VisitValue, Value, ConfHashMap, VisitConfig, ActionTree}};
+use crate::{lexer::Token, errors::SyntaxError, visitor::{VisitValue, DbgValue, ConfHashMap, VisitConfig, ActionTree}};
 use super::stmt::Stmt;
 
 #[derive(Debug)]
@@ -31,7 +31,7 @@ flexar::parser! {
 }
 
 impl VisitValue for Node<Table> {
-    fn visit(self, visitor: &mut ActionTree, scope: &[(Position, Box<str>)]) -> (Position, Value) {
+    fn visit(self, visitor: &mut ActionTree, scope: &[(Position, Box<str>)]) -> (Position, DbgValue) {
         let mut current = self.node;
         let mut out = ConfHashMap::new();
 
@@ -46,6 +46,6 @@ impl VisitValue for Node<Table> {
             }
         }
 
-        (self.position, Value::Table(out))
+        (self.position, DbgValue::Table(out))
     }
 }

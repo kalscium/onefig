@@ -18,8 +18,8 @@ dave.dog: {
     age = 5;
 }
 
-# Global varibles
-conff nix nixos: "/etc/nixos/configuration.nix";
+// Global varibles
+# conff nix nixos: "/etc/nixos/configuration.nix";
 12."dave".name: value;
 var env;
 env.nix-version: 23;
@@ -29,26 +29,26 @@ env.nix-version: 23;
 
 # nixos = "not a table" // should throw error
 
-nixos: {
-    version: "20.05";
-    environment.systemPackages: pkgs >> [
-        // Overrides
-        </
-            (pkgs.vscodium.overrideAttrs (oldAttrs: rec {
-                src = fetchurl {
-                    url = "https://github.com/VSCodium/vscodium/releases/download/${version}/VSCodium-linux-x64-${version}.tar.gz";
-                    sha256 = "a606e540f8dfe5a049513138adb01f03d6005cbb9b1b6a871688462ea51aa573";
-                };
-                version = "1.81.1.23222";
-            }))
-        \>
+# nixos: {
+#     version: "20.05";
+#     environment.systemPackages: pkgs >> [
+#         // Overrides
+#         </
+#             (pkgs.vscodium.overrideAttrs (oldAttrs: rec {
+#                 src = fetchurl {
+#                     url = "https://github.com/VSCodium/vscodium/releases/download/${version}/VSCodium-linux-x64-${version}.tar.gz";
+#                     sha256 = "a606e540f8dfe5a049513138adb01f03d6005cbb9b1b6a871688462ea51aa573";
+#                 };
+#                 version = "1.81.1.23222";
+#             }))
+#         \>
+# 
+#         // Installed packages
+#         vscodium,
+#         rustup,
+#         docker,
+#         helix,
+#     ]
+# }
 
-        // Installed packages
-        vscodium,
-        rustup,
-        docker,
-        helix,
-    ]
-}
-
-nixos$ sudo nixos-rebuild switch --upgrade;
+# nixos$ sudo nixos-rebuild switch --upgrade;

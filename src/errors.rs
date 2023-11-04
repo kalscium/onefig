@@ -29,7 +29,7 @@ flexar::compiler_error! {
 flexar::compiler_error! {
     [[Define] LogicError]
     [Logical Errors (errors in logic)]
-    (LG001) "key assigned to twice": "key `", "` first assignment at ln `", "`";
+    (LG001) "key assigned to twice": "key `", "` first assigned to at ln `", "`";
     (LG002) "unsupported feature in json": "`", "` feature isn't supported in json";
     (LG003) "unsupported feature in toml": "`", "` feature isn't supported in toml";
 }

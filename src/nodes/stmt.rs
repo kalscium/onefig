@@ -1,5 +1,5 @@
 use flexar::prelude::*;
-use crate::{lexer::Token, errors::SyntaxError, conff::ConffType, visitor::{VisitConfig, ActionTree, ConfHashMap, VisitValue, ConfTable, Value}};
+use crate::{lexer::Token, errors::SyntaxError, conff::ConffType, visitor::{VisitConfig, ActionTree, ConfHashMap, VisitValue, ConfTable, DbgValue}};
 use super::{path::Path, atom::Atom};
 
 #[derive(Debug)]
@@ -49,7 +49,7 @@ impl VisitConfig for Node<Stmt> {
                     Atom::Str(x) => x,
                     _ => compiler_error!((SY404, self.position.clone())).throw(),
                 }));
-                map.set(&Path::flatten(path), Value::Table(ConfHashMap::new()), self.position.clone());
+                map.set(&Path::flatten(path), DbgValue::Table(ConfHashMap::new()), self.position.clone());
             },
             S::Config(path, value) => {let atom = value.visit(visitor, scope); map.set(
                 &Path::flatten(path),

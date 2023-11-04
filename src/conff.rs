@@ -1,9 +1,10 @@
 use std::{path::PathBuf, mem::replace};
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
-use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, Value}, patt_unwrap, target_lang::{json, toml}};
+use serde::{Serialize, Deserialize};
+use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml}};
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ConfFile {
     pub conff_type: ConffType,
     pub table: HashMap<Box<str>, Value>,
@@ -23,7 +24,7 @@ impl ConfFile {
             let table = {
                 let mut current = &mut att.uni_table;
                 for (_, key) in path.iter() {
-                    current = patt_unwrap!((current.get_mut(key)) Some((_, Value::Table(x))) => x); // if not a table, it should throw an error way before this
+                    current = patt_unwrap!((current.get_mut(key)) Some((_, DbgValue::Table(x))) => x); // if not a table, it should throw an error way before this
                 }
 
                 replace(current, ConfHashMap::new()) // move out of reference
@@ -51,7 +52,7 @@ impl ConfFile {
             
             out.push(ConfFile {
                 conff_type: replace(conff_type, ConffType::Json),
-                table: table.into_iter().map(|(k, (_, x))| (k, x)).collect(),
+                table: table.into_iter().map(|(k, (_, x))| (k, x.into())).collect(),
                 path: file_path,
                 shell,
             })
@@ -61,7 +62,7 @@ impl ConfFile {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub enum ConffType {
     Toml,
     Json,
