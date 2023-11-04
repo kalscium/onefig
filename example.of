@@ -7,7 +7,11 @@ dave.skills = [
     "and other stuff"
 ];
 
+conff json dave: "dave.json";
+
 dave.dog.name = 86;
+
+# dave.dog.owner = dave; // should throw error (cause json target)
 
 dave.dog: {
     # name = "Biscut"; // should throw error

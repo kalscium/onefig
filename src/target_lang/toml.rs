@@ -1,9 +1,12 @@
 use crate::{visitor::{ConfHashMap, Value}, errors::LogicError};
 
+#[inline]
 pub fn check_table(table: &ConfHashMap) {
     for (_, (pos, x)) in table.iter() {
-        if let Value::Path(_) = x {
-            flexar::compiler_error!((LG003, pos.clone()) "path value").throw()
+        match x {
+            Value::Table(x) => check_table(x),
+            Value::Path(_) => flexar::compiler_error!((LG003, pos.clone()) "path value").throw(),
+            _ => (),
         }
     }
 }
