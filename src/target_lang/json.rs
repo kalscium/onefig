@@ -1,7 +1,7 @@
 use std::{io::{BufWriter, Result, Write}, fs::File, path::Path};
 use hashbrown::HashMap;
 
-use crate::{visitor::{ConfHashMap, DbgValue, Value}, errors::LogicError, MaybeRef};
+use crate::{visitor::{ConfHashMap, DbgValue, Value}, errors::LogicError};
 
 #[inline]
 pub fn check_table(table: &ConfHashMap) {
@@ -23,12 +23,11 @@ pub fn generate(path: impl AsRef<Path>, table: &HashMap<Box<str>, Value>) -> Res
 #[inline]
 fn gen_value(value: &Value, buffer: &mut BufWriter<File>) -> Result<()> {
     use Value as V;
-    use MaybeRef as M;
-    let value: MaybeRef<Box<str>> = match value {
-        V::Bool(x) => M::Owned(x.to_string().into_boxed_str()),
-        V::Int(x) => M::Owned(x.to_string().into_boxed_str()),
-        V::String(x) => M::Owned(format!("\"{x}\"").into_boxed_str()),
-        V::Raw(x) => M::Ref(x),
+    let value = match value {
+        V::Bool(x) => x.to_string(),
+        V::Int(x) => x.to_string(),
+        V::String(x) => format!("\"{x}\""),
+        V::Raw(x) => x.to_string(),
         V::Path(_) => panic!("shouldn't happen"), // propper error should occur way before this
         V::List(x) => return gen_list(x, buffer),
         V::Table(x) => return gen_table(x, buffer),
