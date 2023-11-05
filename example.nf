@@ -9,14 +9,16 @@ dave.skills = [
 
 conff json dave: "dave.json";
 
-dave.dog.name = 86;
+# dave.dog.name = 86;
 
 # dave.dog.owner = dave; // should throw error (cause json target)
 
 dave.dog: {
-    # name = "Biscut"; // should throw error
+    name = "Biscut"; // should throw error
     age = 5;
 }
+
+dave.dog.favourite-treats = [ "cookies", "steaks" ];
 
 // Global varibles
 # conff nix nixos: "/etc/nixos/configuration.nix";

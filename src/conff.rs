@@ -1,4 +1,4 @@
-use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader}, fs::File};
+use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader}, fs::File, process::Command};
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
@@ -69,6 +69,28 @@ impl ConfFile {
     pub fn deserialize(path: impl AsRef<std::path::Path>) -> Box<[Self]> { // todo: implement better error handling
         let buffer = BufReader::new(File::create(path).unwrap());
         bincode::deserialize_from(buffer).unwrap()
+    }
+
+    pub fn generate(&self) { // todo: proper errors and handling of such
+        use ConffType as C;
+        match self.conff_type {
+            C::Json => json::generate(&self.path, &self.table).unwrap(),
+            C::Toml => todo!(),
+            C::Nix => todo!(),
+        }
+        self.execute_shell();
+    }
+
+    pub fn execute_shell(&self) { // todo: proper errors and handling of such
+        for cmd in self.shell.iter() {
+            let status = Command::new(cmd[0].as_ref())
+                .args(cmd[1..].iter().map(|x| x.as_ref()))
+                .status()
+                .unwrap();
+            if !status.success() {
+                todo!();
+            }
+        }
     }
 }
 

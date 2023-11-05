@@ -30,6 +30,12 @@ flexar::compiler_error! {
     [[Define] LogicError]
     [Logical Errors (errors in logic)]
     (LG001) "key assigned to twice": "key `", "` first assigned to at ln `", "`";
-    (LG002) "unsupported feature in json": "`", "` feature isn't supported in json";
-    (LG003) "unsupported feature in toml": "`", "` feature isn't supported in toml";
+    (LG002) "unsupported feature in json": "the `", "` feature isn't supported in json";
+    (LG003) "unsupported feature in toml": "the `", "` feature isn't supported in toml";
+}
+
+flexar::compiler_error! {
+    [[Define] UnexpectedError]
+    [Unexpected Errors (so like io errors, command errors, etc.)]
+    (UE001) "shell command exited with non-zero exit code": "this shell cmd failed";
 }
