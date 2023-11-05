@@ -35,7 +35,7 @@ flexar::compiler_error! {
 }
 
 flexar::compiler_error! {
-    [[Define] UnexpectedError]
-    [Unexpected Errors (so like io errors, command errors, etc.)]
-    (UE001) "shell command exited with non-zero exit code": "this shell cmd failed";
+    [[Define] RuntimeErrors]
+    [Runtime Errors (Errors that, like the name suggests; occur on runtime)]
+    (RT001) "shell command exited with non-zero exit code": "this shell cmd failed";
 }
