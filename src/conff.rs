@@ -75,7 +75,7 @@ impl ConfFile {
         use ConffType as C;
         match self.conff_type {
             C::Json => json::generate(&self.path, &self.table).unwrap(),
-            C::Toml => todo!(),
+            C::Toml => toml::generate(&self.path, &self.table).unwrap(),
             C::Nix => todo!(),
         }
         self.execute_shell();

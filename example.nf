@@ -20,9 +20,20 @@ dave.dog: {
 
 dave.dog.favourite-treats = [ "cookies", "steaks" ];
 
-// Global varibles
+conff toml stewart = "stewart.toml";
+stewart.name = "Stewart Lee"
+stewart.age = 30,
+stewart.skills = [ "nothing :C" ]
+stewart.dog.name: "Bob";
+stewart.dog: {
+    age = 2;
+    children = {
+        cheese = { etc: [[["that's alotta lists"]]] },
+    }
+}
+
 # conff nix nixos: "/etc/nixos/configuration.nix";
-12."dave".name: value;
+12."dave".name: value; // will be dropped
 var env;
 env.nix-version: 23;
 
