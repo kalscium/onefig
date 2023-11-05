@@ -61,12 +61,12 @@ impl ConfFile {
         out.into_boxed_slice()
     }
 
-    pub fn serialize(this: &[Self], path: impl AsRef<std::path::Path>) { // todo: implement better error handling
+    pub fn compile(this: &[Self], path: impl AsRef<std::path::Path>) { // todo: implement better error handling
         let buffer = BufWriter::new(File::create(path).unwrap());
         bincode::serialize_into(buffer, this).unwrap();
     }
 
-    pub fn deserialize(path: impl AsRef<std::path::Path>) -> Box<[Self]> { // todo: implement better error handling
+    pub fn load_compiled(path: impl AsRef<std::path::Path>) -> Box<[Self]> { // todo: implement better error handling
         let buffer = BufReader::new(File::create(path).unwrap());
         bincode::deserialize_from(buffer).unwrap()
     }

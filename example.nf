@@ -33,8 +33,8 @@ stewart.dog: {
 }
 
 # conff nix nixos: "/etc/nixos/configuration.nix";
-12."dave".name: value; // will be dropped
-var env;
+12."dave".name: value; // orphan will be dropped when compiled
+var env; // varibles are fully implemented yet, so it will also be dropped
 env.nix-version: 23;
 
 // Stuff for nix os

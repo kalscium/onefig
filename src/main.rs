@@ -9,6 +9,6 @@ fn main() {
     let nodes = SourceFile::parse(&tokens);
     let action_tree = nodes.visit();
     let conf_files = ConfFile::from_att(action_tree);
-    ConfFile::serialize(&conf_files, "example.cnf");
+    ConfFile::compile(&conf_files, "example.cnf");
     conf_files.iter().for_each(|x| x.generate());
 }
