@@ -1,20 +1,10 @@
 use std::{io::{BufWriter, Result, Write}, fs::File, path::Path};
 use hashbrown::HashMap;
-use crate::{visitor::{ConfHashMap, DbgValue, Value}, errors::LogicError};
-
-#[inline]
-pub fn check_table(table: &ConfHashMap) {
-    for (_, (pos, x)) in table.iter() {
-        match x {
-            DbgValue::Table(x) => check_table(x),
-            DbgValue::Path(_) => flexar::compiler_error!((LG002, pos.clone()) "path value").throw(),
-            _ => (),
-        }
-    }
-}
+use crate::visitor::Value;
 
 pub fn generate(path: impl AsRef<Path>, table: &HashMap<Box<str>, Value>) -> Result<()> {
     let mut buffer = BufWriter::new(File::create(path)?);
+    buffer.write_all(b"{config,pkgs,...}:")?;
     gen_table(table, &mut buffer)?;
     buffer.flush()
 }
@@ -27,7 +17,7 @@ fn gen_value(value: &Value, buffer: &mut BufWriter<File>) -> Result<()> {
         V::Int(x) => x.to_string(),
         V::String(x) => format!("\"{x}\""),
         V::Raw(x) => x.to_string(),
-        V::Path(_) => panic!("shouldn't happen"), // propper error should occur way before this
+        V::Path(x) => x.iter().map(|x| format!("\"{x}\"")).collect::<Vec<_>>().join("."),
         V::List(x) => return gen_list(x, buffer),
         V::Table(x) => return gen_table(x, buffer),
     };
@@ -40,7 +30,7 @@ fn gen_list(list: &[Value], buffer: &mut BufWriter<File>) -> Result<()> {
     for (i, x) in list.iter().enumerate() {
         gen_value(x, buffer)?;
         if i < list.len()-1 {
-            buffer.write_all(b",")?;
+            buffer.write_all(b" ")?;
         }
     }
     buffer.write_all(b"]")
@@ -49,13 +39,11 @@ fn gen_list(list: &[Value], buffer: &mut BufWriter<File>) -> Result<()> {
 #[inline]
 fn gen_table(table: &HashMap<Box<str>, Value>, buffer: &mut BufWriter<File>) -> Result<()> {
     buffer.write_all(b"{")?;
-    for (i, (k, x)) in table.iter().enumerate() {
+    for (k, x) in table.iter() {
         buffer.write_all(format!("\"{k}\"").as_bytes())?;
-        buffer.write_all(b":")?; 
+        buffer.write_all(b"=")?; 
         gen_value(x, buffer)?;
-        if i < table.len()-1 {
-            buffer.write_all(b",")?;
-        }
+        buffer.write_all(b";")?;
     }
     buffer.write_all(b"}")
 }

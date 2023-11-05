@@ -16,7 +16,7 @@ pub fn check_table(table: &ConfHashMap) {
 pub fn generate(path: impl AsRef<Path>, table: &HashMap<Box<str>, Value>) -> Result<()> {
     let mut buffer = BufWriter::new(File::create(path)?);
     for (i, (k, x)) in table.iter().enumerate() {
-        buffer.write_all(k.as_bytes())?;
+        buffer.write_all(format!("\"{k}\"").as_bytes())?;
         buffer.write_all(b"=")?;
         gen_value(x, &mut buffer)?;
         if i < table.len()-1 {
@@ -57,7 +57,7 @@ fn gen_list(list: &[Value], buffer: &mut BufWriter<File>) -> Result<()> {
 fn gen_table(table: &HashMap<Box<str>, Value>, buffer: &mut BufWriter<File>) -> Result<()> {
     buffer.write_all(b"{")?;
     for (i, (k, x)) in table.iter().enumerate() {
-        buffer.write_all(k.as_bytes())?;
+        buffer.write_all(k.as_bytes())?; // might not work with custom keys eg `"custom/key": true`
         buffer.write_all(b"=")?; 
         gen_value(x, buffer)?;
         if i < table.len()-1 {

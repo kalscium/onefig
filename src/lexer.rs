@@ -85,7 +85,8 @@ flexar::lexer! {
                     if (section.trim() == "\\>") {
                         done RawConf(conf.into_boxed_str());
                     };
-                    { conf.push_str(&section.trim()) };
+                    { conf.push_str(section.trim()) };
+                    { conf.push('\n') };
                     { section = String::new() };
                     advance:();
                     { continue 'raw };

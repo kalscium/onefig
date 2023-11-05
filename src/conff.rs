@@ -2,7 +2,7 @@ use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader}, fs::File, pro
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
-use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml}};
+use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml, nix}};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ConfFile {
@@ -76,7 +76,7 @@ impl ConfFile {
         match self.conff_type {
             C::Json => json::generate(&self.path, &self.table).unwrap(),
             C::Toml => toml::generate(&self.path, &self.table).unwrap(),
-            C::Nix => todo!(),
+            C::Nix => nix::generate(&self.path, &self.table).unwrap(),
         }
         self.execute_shell();
     }

@@ -1,4 +1,4 @@
-age=30
-dog={age=2,name="Bob",children={cheese={etc=[[["that's alotta lists"]]]}}}
-name="Stewart Lee"
-skills=["nothing :C"]
+"age"=30
+"dog"={age=2,name="Bob",children={cheese={etc=[[["that's alotta lists"]]]}}}
+"name"="Stewart Lee"
+"skills"=["nothing :C"]
