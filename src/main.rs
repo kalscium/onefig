@@ -8,5 +8,6 @@ fn main() {
 
     let nodes = SourceFile::parse(&tokens);
     let action_tree = nodes.visit();
-    let _conffile = ConfFile::from_att(action_tree);
+    let conf_files = ConfFile::from_att(action_tree);
+    ConfFile::serialize(&conf_files, "example.cof");
 }

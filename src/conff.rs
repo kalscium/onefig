@@ -1,4 +1,4 @@
-use std::{path::PathBuf, mem::replace};
+use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader}, fs::File};
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
@@ -59,6 +59,16 @@ impl ConfFile {
         }
 
         out.into_boxed_slice()
+    }
+
+    pub fn serialize(this: &[Self], path: impl AsRef<std::path::Path>) { // todo: implement better error handling
+        let buffer = BufWriter::new(File::create(path).unwrap());
+        bincode::serialize_into(buffer, this).unwrap();
+    }
+
+    pub fn deserialize(path: impl AsRef<std::path::Path>) -> Box<[Self]> { // todo: implement better error handling
+        let buffer = BufReader::new(File::create(path).unwrap());
+        bincode::deserialize_from(buffer).unwrap()
     }
 }
 
