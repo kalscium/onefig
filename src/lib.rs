@@ -21,7 +21,7 @@ macro_rules! safe_unwrap {
     ($expr:expr => $type:ident $(,$args:expr)*) => {
         match $expr {
             Ok(x) => x,
-            Err(x) => flexar::compiler_error!(($type, Position::new_oneline("<runtime>", &x.to_string(), None)) $($args),*).throw(),
+            Err(x) => flexar::compiler_error!(($type, flexar::prelude::Position::new_oneline("<runtime>", &x.to_string(), None)) $($args),*).throw(),
         }
     };
 }
