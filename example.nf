@@ -32,7 +32,7 @@ stewart.dog: {
     }
 }
 
-conff nix nixos: "example-conf.nix";
+conff nix nixos: "example.nix";
 12."dave".name: value; // orphan will be dropped when compiled
 var env; // varibles are fully implemented yet, so it will also be dropped
 env.example-varible: 23;

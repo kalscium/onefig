@@ -5,16 +5,14 @@ use serde::{Serialize, Deserialize};
 use crate::{safe_unwrap, lexer::Token, errors::{SyntaxError, RuntimeError}, visitor::{ConfHashMap, ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml, nix}};
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct ConfFile {
-    pub conff_type: ConffType,
-    pub table: HashMap<Box<str>, Value>,
-    pub path: PathBuf,
-    pub shell: Box<[Box<[Box<str>]>]>,
+pub struct ConffTree {
+    pub conf_files: Box<[ConfFile]>,
+    pub include: Box<[PathBuf]>,
 }
 
-impl ConfFile {
+impl ConffTree {
     /// Gets a boxed slice of conffiles from a `Action Tree` (or att for short)
-    pub fn from_att(mut att: ActionTree) -> Box<[Self]> {
+    pub fn from_att(mut att: ActionTree) -> Self {
         let mut out = Vec::new();
 
         for (conff_type, path, file_path) in att.conff_list.iter_mut() {
@@ -58,19 +56,32 @@ impl ConfFile {
             })
         }
 
-        out.into_boxed_slice()
+        Self {
+            conf_files: out.into_boxed_slice(),
+            include: Box::new([]),
+        }
     }
 
-    pub fn compile(this: &[Self], path: impl AsRef<std::path::Path>) { // todo: implement better error handling
+    pub fn compile(&self, path: impl AsRef<std::path::Path>) { // todo: implement better error handling
         let buffer = BufWriter::new(safe_unwrap!(File::create(&path) => RT003, path.as_ref().to_string_lossy()));
-        safe_unwrap!(bincode::serialize_into(buffer, this) => RT003, path.as_ref().to_string_lossy());
+        safe_unwrap!(bincode::serialize_into(buffer, self) => RT003, path.as_ref().to_string_lossy());
     }
 
-    pub fn load_compiled(path: impl AsRef<std::path::Path>) -> Box<[Self]> { // todo: implement better error handling
+    pub fn load_compiled(path: impl AsRef<std::path::Path>) -> Self { // todo: implement better error handling
         let buffer = BufReader::new(safe_unwrap!(File::open(&path) => RT005, path.as_ref().to_string_lossy()));
         safe_unwrap!(bincode::deserialize_from(buffer) => RT002, path.as_ref().to_string_lossy())
     }
+}
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ConfFile {
+    pub conff_type: ConffType,
+    pub table: HashMap<Box<str>, Value>,
+    pub path: PathBuf,
+    pub shell: Box<[Box<[Box<str>]>]>,
+}
+
+impl ConfFile {
     pub fn generate(&self) { // todo: proper errors and handling of such
         use ConffType as C;
         match self.conff_type {
