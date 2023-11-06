@@ -73,6 +73,20 @@ impl ConffTree {
         let buffer = BufReader::new(safe_unwrap!(File::open(&path) => RT005, path.as_ref().to_string_lossy()));
         safe_unwrap!(bincode::deserialize_from(buffer) => RT002, path.as_ref().to_string_lossy())
     }
+
+    /// Generates the configuration files
+    pub fn generate(&self) {
+        // Generate config files
+        self.conf_files.iter()
+            .for_each(|x| x.generate());
+
+        // Copy the included files
+        for (contents, path) in self.include.iter() {
+            safe_unwrap!(fs::write(path, contents)
+                => RT009, path.to_string_lossy()
+            );
+        }
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]

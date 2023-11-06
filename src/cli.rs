@@ -25,22 +25,22 @@ pub enum Command {
     },
     #[command(about="Executes a onefig script or binary")]
     Run {
-        #[arg(short='u', long="unsafe", help="Stops onefig from caching the old configurations; disallowing for rollbacks.")]
-        not_safe: bool,
+        // #[arg(short='u', long="unsafe", help="Stops onefig from caching the old configurations; disallowing for rollbacks.")]
+        // not_safe: bool,
         #[arg(short='s', long, help="Interprets the files as onefig scripts rather than binaries.")]
         is_script: bool,
         #[arg(index=1, help="The onefig scripts or binaries to execute.")]
         files: String,
     },
-    #[command(about="Clears cache (configuration file history) (also disables rollbacks)")]
-    ClearCache,
+    // #[command(about="Clears cache (configuration file history) (also disables rollbacks)")]
+    // ClearCache,
     #[command(about="Lists most of the configuration files in your system (unix only)")]
     Search,
-    #[command(about="Rolls back to the state of the system's config-files before an execution")]
-    Rollback {
-        #[arg(short='s', long, help="Interprets the files as onefig scripts rather than binaries.")]
-        is_script: bool,
-        #[arg(short, long, help="The onefig script or binary to rollback on")]
-        file: String,
-    },
+    // #[command(about="Rolls back to the state of the system's config-files before an execution")]
+    // Rollback {
+    //     #[arg(short='s', long, help="Interprets the files as onefig scripts rather than binaries.")]
+    //     is_script: bool,
+    //     #[arg(short, long, help="The onefig script or binary to rollback on")]
+    //     file: String,
+    // },
 }
