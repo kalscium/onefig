@@ -1,4 +1,4 @@
-use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader}, fs::{File, self}, process::Command};
+use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader, Write}, fs::{File, self}, process::Command};
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
@@ -110,12 +110,57 @@ impl ConfFile {
 
     pub fn execute_shell(&self) { // todo: proper errors and handling of such
         for cmd in self.shell.iter() {
+            let cmd_display = cmd.join(" ");
+
+            // Ask user if they confirm
+            let mut user_out = String::new();
+            println!("\n{}", flexar::colour_format![
+                cyan("Are you sure you want to run this cmd `"),
+                none(&cmd_display),
+                cyan("`?\n"),
+                blue("("),
+                yellow("rewrite the command below"),
+                blue(")"),
+            ]);
+            print!("{}", flexar::colour_format![blue("-> ")]);
+            std::io::stdout().flush().unwrap();
+            std::io::stdin().read_line(&mut user_out).unwrap();
+
+            // Check if the user wrote correctly
+            if user_out.trim() != cmd_display.trim() {
+                println!("{}", flexar::colour_format![
+                    cyan("Shell commands "),
+                    red("do not"),
+                    cyan(" match, "),
+                    yellow("skipping"),
+                    cyan("...\n")
+                ]);
+                continue;
+            }
+
+            // Execute and use stdout
+            println!("{}", flexar::colour_format![
+                blue("\n==="),
+                cyan(" shell cmd `"),
+                none(&cmd_display),
+                cyan("` stdout start "),
+                blue("==="),
+            ]);
+
             let status = safe_unwrap!(Command::new(cmd[0].as_ref())
                 .args(cmd[1..].iter().map(|x| x.as_ref()))
-                .status() => RT004);
+                .status() => RT004, cmd_display);
             if !status.success() {
-                flexar::compiler_error!((RT001, Position::new_oneline("<shell>", &cmd.join(" "), None))).throw()
+                return flexar::compiler_error!((RT001, Position::new_oneline("<shell>", &cmd_display, None))).throw();
             }
+
+            println!("{}", flexar::colour_format![
+                blue("==="),
+                cyan(" shell cmd `"),
+                none(&cmd_display),
+                cyan("` stdout end   "),
+                blue("===\n"),
+            ]);
         }
     }
 }

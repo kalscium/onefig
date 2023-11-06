@@ -41,7 +41,7 @@ flexar::compiler_error! {
     (RT001) "shell command exited with non-zero exit code": "this shell cmd failed";
     (RT002) "compiled onefig-binary is likely to be corrupted (serialization error)": "occured while loading `", "`";
     (RT003) "io error occured during compilation of onefig-script": "occured while compiling at `", "`";
-    (RT004) "error occured while running shell command": "occured while running cmd `", "`";
+    (RT004) "error occured while running shell command": "occured while running shell cmd `", "`";
     (RT005) "io error occured during loading of onefig-binary": "occured while loading `", "`";
     (RT006) "io error occured while generating configuration-files": "occured while generating config-file `", "`";
     (RT007) "io error occured while importing onefig-script": "occured while importing `", "`";
