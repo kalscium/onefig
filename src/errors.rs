@@ -42,4 +42,5 @@ flexar::compiler_error! {
     (RT003) "io error occured during compilation of conff-tree": "occured while compiling at `", "`";
     (RT004) "error occured while running shell command": "occured while running cmd `", "`";
     (RT005) "io error occured during loading of compiled conff-tree": "occured while loading `", "`";
+    (RT006) "io error occured while generating configuration-files": "occured while generating config-file `", "`";
 }

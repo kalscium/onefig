@@ -83,9 +83,9 @@ impl ConfFile {
     pub fn generate(&self) { // todo: proper errors and handling of such
         use ConffType as C;
         match self.conff_type {
-            C::Json => json::generate(&self.path, &self.table).unwrap(),
-            C::Toml => toml::generate(&self.path, &self.table).unwrap(),
-            C::Nix => nix::generate(&self.path, &self.table).unwrap(),
+            C::Json => unwrap!(json::generate(&self.path, &self.table) => RT006, self.path.to_string_lossy()),
+            C::Toml => unwrap!(toml::generate(&self.path, &self.table) => RT006, self.path.to_string_lossy()),
+            C::Nix => unwrap!(nix::generate(&self.path, &self.table) => RT006, self.path.to_string_lossy()),
         }
         self.execute_shell();
     }
