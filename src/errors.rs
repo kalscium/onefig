@@ -39,8 +39,8 @@ flexar::compiler_error! {
     [Runtime Errors (Errors that, like the name suggests; occur on runtime)]
     (RT001) "shell command exited with non-zero exit code": "this shell cmd failed";
     (RT002) "compiled conff-tree is likely to be corrupted (serialization error)": "occured while loading `", "`";
-    (RT003) "io error occured during compilation of conff-tree": "occured while compiling at `", "`";
+    (RT003) "io error occured during compilation of onefig-script": "occured while compiling at `", "`";
     (RT004) "error occured while running shell command": "occured while running cmd `", "`";
-    (RT005) "io error occured during loading of compiled conff-tree": "occured while loading `", "`";
+    (RT005) "io error occured during loading of onefig-binary": "occured while loading `", "`";
     (RT006) "io error occured while generating configuration-files": "occured while generating config-file `", "`";
 }
