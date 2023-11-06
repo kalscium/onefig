@@ -33,6 +33,9 @@ flexar::lexer! {
         Bool(val: bool) => val;
         Conff => "conff";
         Var => "var";
+        Import => "import";
+        Include => "include";
+        As => "as";
 
         Ident(x: Box<str>) => x;
         Str(x: Box<str>) => format!("\"{x}\"");
@@ -147,6 +150,9 @@ flexar::lexer! {
 
         if (ident == "conff") { done Conff(); };
         if (ident == "var") { done Var(); };
+        if (ident == "import") { done Import(); };
+        if (ident == "include") { done Include(); };
+        if (ident == "as") { done As(); };
         if (ident == "true") { done Bool(true); };
         if (ident == "false") { done Bool(false); };
 

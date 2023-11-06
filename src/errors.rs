@@ -21,6 +21,7 @@ flexar::compiler_error! {
     (SY017) "invalid config-file type (expected `toml`, `json` or `nix`)": "`", "` is an invalid conff type";
     (SY018) "expected config-file type": "expected conff type, found `", "`";
     (SY019) "non-terminated raw configuration": "expected `\\>` to terminate raw configuration";
+    (SY020) "expected `as` keyword in `include` statement": "expected `as`, found `", "`";
 
     [Meta Errors]
     (SY404) "use of unimplemented or experimental feature": "unimplemented, experimental or unstable";
@@ -29,7 +30,7 @@ flexar::compiler_error! {
 flexar::compiler_error! {
     [[Define] LogicError]
     [Logical Errors (errors in logic)]
-    (LG001) "key assigned to twice": "key `", "` first assigned to at ln `", "`";
+    (LG001) "key assigned to twice": "key `", "` first assigned to at `", ":", ":", "`";
     (LG002) "unsupported feature in json": "the `", "` feature isn't supported in json";
     (LG003) "unsupported feature in toml": "the `", "` feature isn't supported in toml";
 }

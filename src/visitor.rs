@@ -25,13 +25,13 @@ impl ActionTree {
     }
 
     #[inline]
-    pub fn import(visitor: &mut ActionTree, map: &mut ConfHashMap, path: impl AsRef<path::Path>) {
+    pub fn import(&mut self, map: &mut ConfHashMap, path: impl AsRef<path::Path>) {
         let file = safe_unwrap!(fs::read_to_string(&path) => RT007, path.as_ref().to_string_lossy());
         let tokens = Token::tokenize(Lext::new(path.as_ref().to_string_lossy().to_string(), &file));
         let nodes = SourceFile::parse(tokens);
         nodes.0.into_vec()
             .into_iter()
-            .for_each(|x| x.visit(visitor, map, &[]));
+            .for_each(|x| x.visit(self, map, &[]));
     }
 }
 
@@ -104,7 +104,7 @@ impl ConfTable for ConfHashMap {
                     .for_each(|(k, (v_pos, v_value))| if let Some(first) = t1.insert(k.clone(), (v_pos.clone(), v_value)) {
                         flexar::compiler_error!((LG001, v_pos) k, first.0.0.ln).throw()
                     }),
-                (Some((first, _)), _) => flexar::compiler_error!((LG001, path[0].0.clone()) path[0].1, first.0.ln).throw(),
+                (Some((first, _)), _) => flexar::compiler_error!((LG001, path[0].0.clone()) path[0].1, first.0.file_name, first.0.ln, first.0.ln_idx).throw(),
                 (None, value) => {self.insert(path[0].1.clone(), (pos.clone(), value));},
             }; return;
         }

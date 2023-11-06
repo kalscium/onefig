@@ -20,17 +20,8 @@ dave.dog: {
 
 dave.dog.favourite-treats = [ "cookies", "steaks" ];
 
-conff toml stewart = "stewart.toml";
-stewart.name = "Stewart Lee"
-stewart.age = 30,
-stewart.skills = [ "nothing :C" ]
-stewart.dog.name: "Bob";
-stewart.dog: {
-    age = 2;
-    children = {
-        cheese = { etc: [[["that's alotta lists"]]] },
-    }
-}
+import "example2.nf"; // Imports stewart from the other onefig script
+include "Cargo.toml" as "Cargo.toml"; // as an example it'll include this project's `Cargo.toml` file
 
 conff nix nixos: "example.nix";
 12."dave".name: value; // orphan will be dropped when compiled
