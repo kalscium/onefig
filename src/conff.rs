@@ -2,7 +2,16 @@ use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader}, fs::File, pro
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
-use crate::{lexer::Token, errors::SyntaxError, visitor::{ConfHashMap, ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml, nix}};
+use crate::{lexer::Token, errors::{SyntaxError, RuntimeError}, visitor::{ConfHashMap, ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml, nix}};
+
+macro_rules! unwrap {
+    ($expr:expr => $type:ident $(,$args:expr)*) => {
+        match $expr {
+            Ok(x) => x,
+            Err(x) => flexar::compiler_error!(($type, Position::new_oneline("<runtime>", &x.to_string(), None)) $($args),*).throw(),
+        }
+    };
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ConfFile {
@@ -62,13 +71,13 @@ impl ConfFile {
     }
 
     pub fn compile(this: &[Self], path: impl AsRef<std::path::Path>) { // todo: implement better error handling
-        let buffer = BufWriter::new(File::create(path).unwrap());
-        bincode::serialize_into(buffer, this).unwrap();
+        let buffer = BufWriter::new(unwrap!(File::create(&path) => RT003, path.as_ref().to_string_lossy()));
+        unwrap!(bincode::serialize_into(buffer, this) => RT003, path.as_ref().to_string_lossy());
     }
 
     pub fn load_compiled(path: impl AsRef<std::path::Path>) -> Box<[Self]> { // todo: implement better error handling
-        let buffer = BufReader::new(File::create(path).unwrap());
-        bincode::deserialize_from(buffer).unwrap()
+        let buffer = BufReader::new(unwrap!(File::open(&path) => RT005, path.as_ref().to_string_lossy()));
+        unwrap!(bincode::deserialize_from(buffer) => RT002, path.as_ref().to_string_lossy())
     }
 
     pub fn generate(&self) { // todo: proper errors and handling of such
@@ -83,12 +92,11 @@ impl ConfFile {
 
     pub fn execute_shell(&self) { // todo: proper errors and handling of such
         for cmd in self.shell.iter() {
-            let status = Command::new(cmd[0].as_ref())
+            let status = unwrap!(Command::new(cmd[0].as_ref())
                 .args(cmd[1..].iter().map(|x| x.as_ref()))
-                .status()
-                .unwrap();
+                .status() => RT004);
             if !status.success() {
-                todo!();
+                flexar::compiler_error!((RT001, Position::new_oneline("<shell>", &cmd.join(" "), None))).throw()
             }
         }
     }

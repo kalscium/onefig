@@ -64,5 +64,5 @@ nixos: {
     ]
 }
 
-dave$ echo "hello, world! (example shell command)"
+dave$ echo hello, world! (example shell command)
 # nixos$ sudo nixos-rebuild switch --upgrade;
