@@ -3,7 +3,7 @@ use clap::Parser;
 use flexar::lext::Lext;
 use onefig::{lexer::Token, nodes::source_file::SourceFile, conff::ConfFile, cli::Cli};
 
-fn _old_main() {
+fn main() {
     let file = fs::read_to_string("example.nf").unwrap();
     let tokens = Token::tokenize(Lext::new("example.nf".into(), &file));
 
@@ -19,6 +19,6 @@ fn _old_main() {
     conf_files.iter().for_each(|x| x.generate());
 }
 
-fn main() {
+fn _new_main() {
     let _args = Cli::parse();
 }
