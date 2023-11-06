@@ -1,8 +1,9 @@
 use std::fs;
+use clap::Parser;
 use flexar::lext::Lext;
-use onefig::{lexer::Token, nodes::source_file::SourceFile, conff::ConfFile};
+use onefig::{lexer::Token, nodes::source_file::SourceFile, conff::ConfFile, cli::Cli};
 
-fn main() {
+fn _old_main() {
     let file = fs::read_to_string("example.nf").unwrap();
     let tokens = Token::tokenize(Lext::new("example.nf".into(), &file));
 
@@ -16,4 +17,8 @@ fn main() {
     let conf_files = ConfFile::load_compiled("example.cnf");
 
     conf_files.iter().for_each(|x| x.generate());
+}
+
+fn main() {
+    let _args = Cli::parse();
 }

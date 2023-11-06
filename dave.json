@@ -1,1 +1,1 @@
-{"age":23,"name":"Dave Smith","skills":["programming","people skills","and other stuff"],"dog":{"name":"Biscut","age":5,"favourite-treats":["cookies","steaks"]}}
+{"name":"Dave Smith","age":23,"dog":{"name":"Biscut","age":5,"favourite-treats":["cookies","steaks"]},"skills":["programming","people skills","and other stuff"]}
