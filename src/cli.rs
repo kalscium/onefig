@@ -19,7 +19,7 @@ pub enum Command {
     #[command(about="Compiles onefig-scripts into a single onefig-binary")]
     Compile {
         #[arg(index=1, help="The onefig-script to compile.")]
-        scripts: String,
+        script: String,
         #[arg(index=2, help="The output onefig-binary that is compiled.")]
         output: String,
     },
@@ -37,7 +37,7 @@ pub enum Command {
         #[arg(short='s', long, help="Interprets the files as onefig scripts rather than binaries.")]
         is_script: bool,
         #[arg(index=1, help="The onefig scripts or binaries to execute.")]
-        files: String,
+        file: String,
     },
     // #[command(about="Clears cache (configuration file history) (also disables rollbacks)")]
     // ClearCache,
@@ -58,14 +58,18 @@ impl Cli {
         use Command as C;
         match self.command {
             C::Test => println!("Testing, testing! Wow, it seems like the cli is working :D!"),
-            C::Check { is_binary, file } => {
-                if is_binary {
-                    ConffTree::load_compiled(file);
-                } else {
-                    Self::get_conff_tree(file);
-                }
-            },
-            _ => todo!(),
+            C::Check { is_binary, file } => if is_binary {
+                ConffTree::load_compiled(file);
+            } else {
+                Self::get_conff_tree(file);
+            }
+            ,
+            C::Compile { script, output } => Self::get_conff_tree(script).compile(output),
+            C::Run { is_script, file } => if is_script {
+                Self::get_conff_tree(file).generate();
+            } else {
+                ConffTree::load_compiled(file).generate();
+            }
         }
         println!("{}", flexar::colour_format![
             green("Finished successfully "),
