@@ -7,7 +7,7 @@ fn main() {
     let file = fs::read_to_string("example.nf").unwrap();
     let tokens = Token::tokenize(Lext::new("example.nf".into(), &file));
 
-    let nodes = SourceFile::parse(&tokens);
+    let nodes = SourceFile::parse(tokens);
     let action_tree = nodes.visit();
     let conf_files = ConfFile::from_att(action_tree);
     ConfFile::compile(&conf_files, "example.cnf");

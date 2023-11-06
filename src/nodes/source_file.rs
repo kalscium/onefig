@@ -3,13 +3,13 @@ use crate::{lexer::Token, visitor::{ActionTree, VisitConfig, ConfHashMap}};
 use super::stmt::Stmt;
 
 #[derive(Debug)]
-pub struct SourceFile(Box<[Node<Stmt>]>);
+pub struct SourceFile(pub Box<[Node<Stmt>]>);
 
 impl SourceFile {
-    pub fn parse(tokens: &[token_node::Token<Token>]) -> Self {
+    pub fn parse(tokens: Box<[token_node::Token<Token>]>) -> Self {
         if tokens.is_empty() { return Self(Box::new([])) }
 
-        let mut parxt = Parxt::new(tokens);
+        let mut parxt = Parxt::new(&tokens);
         let mut stmts = Vec::new();
 
         while parxt.current().is_some() {

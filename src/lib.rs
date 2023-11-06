@@ -16,3 +16,13 @@ macro_rules! patt_unwrap {
         }
     }
 }
+
+#[macro_export]
+macro_rules! safe_unwrap {
+    ($expr:expr => $type:ident $(,$args:expr)*) => {
+        match $expr {
+            Ok(x) => x,
+            Err(x) => flexar::compiler_error!(($type, Position::new_oneline("<runtime>", &x.to_string(), None)) $($args),*).throw(),
+        }
+    };
+}

@@ -1,7 +1,9 @@
-use flexar::prelude::Position;
+use std::{path, fs};
+
+use flexar::prelude::{Position, Lext};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
-use crate::{errors::LogicError, conff::ConffType};
+use crate::{errors::{LogicError, RuntimeError}, conff::ConffType, safe_unwrap, lexer::Token, nodes::source_file::SourceFile};
 
 #[derive(Debug)]
 pub struct ActionTree {
@@ -18,6 +20,16 @@ impl ActionTree {
             shell_list: Vec::new(),
             uni_table: ConfHashMap::new(),
         }
+    }
+
+    #[inline]
+    pub fn import(visitor: &mut ActionTree, map: &mut ConfHashMap, path: impl AsRef<path::Path>) {
+        let file = safe_unwrap!(fs::read_to_string(&path) => RT007, path.as_ref().to_string_lossy());
+        let tokens = Token::tokenize(Lext::new(path.as_ref().to_string_lossy().to_string(), &file));
+        let nodes = SourceFile::parse(tokens);
+        nodes.0.into_vec()
+            .into_iter()
+            .for_each(|x| x.visit(visitor, map, &[]));
     }
 }
 
