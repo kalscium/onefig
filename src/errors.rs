@@ -44,4 +44,5 @@ flexar::compiler_error! {
     (RT005) "io error occured during loading of onefig-binary": "occured while loading `", "`";
     (RT006) "io error occured while generating configuration-files": "occured while generating config-file `", "`";
     (RT007) "io error occured while importing onefig-script": "occured while importing `", "`";
+    (RT008) "io error occured while reading contents of included configuration file": "occured while including file `", "`";
 }

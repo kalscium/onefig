@@ -1,4 +1,4 @@
-use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader}, fs::File, process::Command};
+use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader}, fs::{File, self}, process::Command};
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
@@ -7,7 +7,7 @@ use crate::{safe_unwrap, lexer::Token, errors::{SyntaxError, RuntimeError}, visi
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ConffTree {
     pub conf_files: Box<[ConfFile]>,
-    pub include: Box<[PathBuf]>,
+    pub include: Box<[(String, PathBuf)]>,
 }
 
 impl ConffTree {
@@ -58,7 +58,9 @@ impl ConffTree {
 
         Self {
             conf_files: out.into_boxed_slice(),
-            include: Box::new([]),
+            include: att.included.into_iter()
+                .map(|(path, target)| (safe_unwrap!(fs::read_to_string(&path) => RT008, path.to_string_lossy()), target))
+                .collect(),
         }
     }
 

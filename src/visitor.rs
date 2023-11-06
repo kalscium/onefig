@@ -1,4 +1,4 @@
-use std::{path, fs};
+use std::{path::{self, PathBuf}, fs};
 
 use flexar::prelude::{Position, Lext};
 use hashbrown::HashMap;
@@ -10,6 +10,7 @@ pub struct ActionTree {
     pub conff_list: Vec<(ConffType, Path, Box<str>)>,
     pub shell_list: Vec<(Path, Box<[Box<str>]>)>,
     pub uni_table: ConfHashMap,
+    pub included: Vec<(PathBuf, PathBuf)>,
 }
 
 impl ActionTree {
@@ -18,6 +19,7 @@ impl ActionTree {
         Self {
             conff_list: Vec::new(),
             shell_list: Vec::new(),
+            included: Vec::new(),
             uni_table: ConfHashMap::new(),
         }
     }
