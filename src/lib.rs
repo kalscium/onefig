@@ -5,6 +5,7 @@ pub mod conff;
 pub mod visitor;
 pub mod target_lang;
 pub mod cli;
+pub mod search;
 
 #[macro_export]
 macro_rules! patt_unwrap {

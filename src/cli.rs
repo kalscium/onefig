@@ -1,9 +1,8 @@
-use std::{fs, path::Path};
-
+use std::{fs, path::{Path, PathBuf}, env::home_dir};
 use clap::{Parser, Subcommand};
 use flexar::prelude::Lext;
-
-use crate::{conff::ConffTree, lexer::Token, safe_unwrap, errors::RuntimeError, nodes::source_file::SourceFile};
+use hashbrown::HashSet;
+use crate::{conff::ConffTree, lexer::Token, safe_unwrap, errors::RuntimeError, nodes::source_file::SourceFile, search::search};
 
 #[derive(Parser)]
 #[command(author, version, about)]
@@ -30,7 +29,7 @@ pub enum Command {
         #[arg(index=1, help="The onefig script/binary to check.")]
         file: String,
     },
-    #[command(about="Executes an onefig script or binary")]
+    #[command(about="Executes an onefig script or binary", alias="r")]
     Run {
         // #[arg(short='u', long="unsafe", help="Stops onefig from caching the old configurations; disallowing for rollbacks.")]
         // not_safe: bool,
@@ -41,8 +40,11 @@ pub enum Command {
     },
     // #[command(about="Clears cache (configuration file history) (also disables rollbacks)")]
     // ClearCache,
-    // #[command(about="Lists most of the configuration files in your system (unix only)")]
-    // Search,
+    #[command(about="Lists most of the configuration files in your system (unix only)")]
+    Search {
+        #[arg(short, long, help="Sets if you want to also include `/etc` configs (requires sudo)")]
+        etc: bool,
+    },
     // #[command(about="Rolls back to the state of the system's config-files before an execution")]
     // Rollback {
     //     #[arg(short='s', long, help="Interprets the files as onefig scripts rather than binaries.")]
@@ -62,14 +64,28 @@ impl Cli {
                 ConffTree::load_compiled(file);
             } else {
                 Self::get_conff_tree(file);
-            }
-            ,
+            },
             C::Compile { script, output } => Self::get_conff_tree(script).compile(output),
             C::Run { is_script, file } => if is_script {
                 Self::get_conff_tree(file).generate();
             } else {
                 ConffTree::load_compiled(file).generate();
-            }
+            },
+            C::Search { etc } => {
+                let mut files = HashSet::new();
+
+                search(home_dir().unwrap().join(".config"), &mut files);
+                // search(false, home_dir().unwrap(), &mut files); // takes wayy too long
+                if etc {
+                    search(PathBuf::from("/etc"), &mut files);
+                }
+
+                // print the paths
+                println!();
+                for path in files.iter() {
+                    println!("{}", path.to_string_lossy());
+                } println!();
+            },
         }
         println!("{}", flexar::colour_format![
             green("Finished successfully "),
