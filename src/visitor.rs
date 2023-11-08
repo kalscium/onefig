@@ -60,6 +60,30 @@ pub enum DbgValue {
     Raw(Box<str>),
 }
 
+impl DbgValue {
+    pub fn same_type(&self, other: &DbgValue) -> bool {
+        macro_rules! double_match {
+            ($($pat:pat,)*) => {
+                match (self, other) {
+                    $(($pat, $pat) => true,)*
+                    (DbgValue::Raw(_), _) => true,
+                    _ => false,
+                }
+            }
+        }
+        
+        use DbgValue as D;
+        double_match! {
+            D::Bool(_),
+            D::Int(_),
+            D::String(_),
+            D::Path(_),
+            D::List(_),
+            D::Table(_),
+        }
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub enum Value {
     String(Box<str>),
@@ -111,7 +135,7 @@ impl ConfTable for ConfHashMap {
 
         match self.get_mut(&path[0].1) {
             Some((_, DbgValue::Table(x))) => x.set(&path[1..], value, pos),
-            Some((first, _)) => flexar::compiler_error!((LG001, path[0].0.clone()) path[0].1, first.0.ln).throw(),
+            Some((first, _)) => flexar::compiler_error!((LG001, path[0].0.clone()) path[0].1, first.0.file_name, first.0.ln, first.0.ln_idx).throw(),
             None => {
                 self.insert(path[0].1.clone(), (pos.clone(), DbgValue::Table(ConfHashMap::new())));
                 self.set(path, value, pos);

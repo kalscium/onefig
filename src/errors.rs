@@ -33,6 +33,7 @@ flexar::compiler_error! {
     (LG001) "key assigned to twice": "key `", "` first assigned to at `", ":", ":", "`";
     (LG002) "unsupported feature in json": "the `", "` feature isn't supported in json";
     (LG003) "unsupported feature in toml": "the `", "` feature isn't supported in toml";
+    (LG004) "list items must all be of the same type in toml": "item's type is different";
 }
 
 flexar::compiler_error! {

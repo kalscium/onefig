@@ -39,6 +39,7 @@ pub fn search(path: PathBuf, set: &mut HashSet<PathBuf>) {
         "static",
         "overrides",
         "probe",
+        "state",
     } { return; }
 
     if path.is_file() {

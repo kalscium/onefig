@@ -1,4 +1,5 @@
-use std::{fs, path::{Path, PathBuf}, env::home_dir};
+use std::{fs, path::{Path, PathBuf}};
+use home::home_dir;
 use clap::{Parser, Subcommand};
 use flexar::prelude::Lext;
 use hashbrown::HashSet;

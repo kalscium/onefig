@@ -210,4 +210,42 @@ flexar::lexer! {
         };
         { return flexar::compiler_error!((SY002, child.spawn().position()) current).throw() };
     };
+
+    '\'' child {
+        { child.advance() }
+        set string { String::new() };
+        rsome (current, 'string) {
+            { if current == '\n' { break 'string; } };
+            ck (current, '\'') {
+                advance:();
+                done Str(string.into_boxed_str());
+            };
+            ck (current, '\\') { // Escape characters
+                advance: current;
+                ck (current, 'n') {
+                    advance:();
+                    { string.push('\n') };
+                    { continue 'string };
+                };
+                ck (current, 't') {
+                    advance:();
+                    { string.push('\t') };
+                    { continue 'string };
+                };
+                ck (current, '\\') {
+                    advance:();
+                    { string.push('\\') };
+                    { continue 'string };
+                };
+                ck (current, '\'') {
+                    advance:();
+                    { string.push('\'') };
+                    { continue 'string };
+                };
+                { return flexar::compiler_error!((SY003, child.spawn().position()) current).throw() };
+            };
+            { string.push(current) };
+        };
+        { return flexar::compiler_error!((SY002, child.spawn().position()) current).throw() };
+    };
 }

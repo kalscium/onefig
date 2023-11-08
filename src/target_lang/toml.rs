@@ -1,15 +1,30 @@
 use std::{io::{BufWriter, Result, Write}, fs::File, path::Path};
 use hashbrown::HashMap;
 use crate::{visitor::{ConfHashMap, DbgValue, Value}, errors::LogicError};
+use flexar::prelude::Position;
 
 #[inline]
 pub fn check_table(table: &ConfHashMap) {
     for (_, (pos, x)) in table.iter() {
-        match x {
-            DbgValue::Table(x) => check_table(x),
-            DbgValue::Path(_) => flexar::compiler_error!((LG003, pos.clone()) "path value").throw(),
-            _ => (),
-        }
+        check_value(pos, x);
+    }
+}
+
+#[inline]
+pub fn check_value(pos: &Position, value: &DbgValue) {
+    match value {
+        DbgValue::Table(x) => check_table(x),
+        DbgValue::Path(_) => flexar::compiler_error!((LG003, pos.clone()) "path value").throw(),
+        DbgValue::List(list) => {
+            let first = &list[0].1;
+            for (pos, x) in list.iter() {
+                check_value(pos, x);
+                if !first.same_type(x) {
+                    return flexar::compiler_error!((LG004, pos.clone())).throw();
+                }
+            }
+        },
+        _ => (),
     }
 }
 
