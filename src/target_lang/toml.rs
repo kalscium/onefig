@@ -16,6 +16,8 @@ pub fn check_value(pos: &Position, value: &DbgValue) {
         DbgValue::Table(x) => check_table(x),
         DbgValue::Path(_) => flexar::compiler_error!((LG003, pos.clone()) "path value").throw(),
         DbgValue::List(list) => {
+            if list.is_empty() { return };
+
             let first = &list[0].1;
             for (pos, x) in list.iter() {
                 check_value(pos, x);

@@ -22,7 +22,7 @@ impl ConffTree {
             let table = {
                 let mut current = &mut att.uni_table;
                 for (_, key) in path.iter() {
-                    current = patt_unwrap!((current.get_mut(key)) Some((_, DbgValue::Table(x))) => x); // if not a table, it should throw an error way before this
+                    current = patt_unwrap!((current.get_mut(key)) Some((_, DbgValue::Table(x))) => x); // broken and throws error when `conff toml etc.another: "etc"` fix later
                 }
 
                 replace(current, ConfHashMap::new()) // move out of reference

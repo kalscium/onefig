@@ -132,9 +132,9 @@ checksum = "acbf1af155f9b9ef647e42cdc158db4b64a1b61f743629225fde6f3e0be2a7c7"
 
 [[package]]
 name = "flexar"
-version = "1.2.0"
+version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1374b47c45a2b2a384641cbf6b6f120aa75364d9fd4bfe21cb32a4b3313ca42"
+checksum = "d6442400039cddaf422a97c3a7d1c44e55c6351dcbd4b24c4ac47924f2540fbf"
 
 [[package]]
 name = "getrandom"
@@ -187,7 +187,7 @@ checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
 
 [[package]]
 name = "onefig"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "ahash",
  "bincode",
