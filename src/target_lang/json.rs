@@ -31,7 +31,7 @@ pub fn check_value(pos: &Position, value: &DbgValue) {
 }
 
 pub fn generate(path: impl AsRef<Path>, table: &HashMap<Box<str>, Value>) -> Result<()> {
-    let _ = fs::create_dir_all(path.as_ref().parent().unwrap_or(&Path::new("")));
+    let _ = fs::create_dir_all(path.as_ref().parent().unwrap_or(Path::new("")));
     let mut buffer = BufWriter::new(File::create(path)?);
     gen_table(table, &mut buffer)?;
     buffer.flush()

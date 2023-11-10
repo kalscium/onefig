@@ -49,7 +49,7 @@ pub trait ConfTable {
     fn set(&mut self, path: &[(Position, Box<str>)], value: DbgValue, pos: Position);
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum DbgValue {
     String(Box<str>),
     Int(usize),

@@ -2,7 +2,7 @@ use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader, Write}, fs::{F
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
-use crate::{safe_unwrap, lexer::Token, errors::{SyntaxError, RuntimeError}, visitor::{ConfHashMap, ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml, nix}};
+use crate::{safe_unwrap, lexer::Token, errors::{SyntaxError, RuntimeError}, visitor::{ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml, nix}};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ConffTree {
@@ -17,6 +17,7 @@ impl ConffTree {
 
         for (conff_type, path, file_path) in att.conff_list.iter_mut() {
             let file_path = PathBuf::from(file_path.to_string());
+            let conff_type = *conff_type;
 
             // Collect the table
             let table = {
@@ -25,7 +26,7 @@ impl ConffTree {
                     current = patt_unwrap!((current.get_mut(key)) Some((_, DbgValue::Table(x))) => x); // broken and throws error when `conff toml etc.another: "etc"` fix later
                 }
 
-                replace(current, ConfHashMap::new()) // move out of reference
+                current.clone()
             };
 
             // Collect the shell commands
@@ -49,7 +50,7 @@ impl ConffTree {
             }
             
             out.push(ConfFile {
-                conff_type: replace(conff_type, ConffType::Json),
+                conff_type,
                 table: table.into_iter().map(|(k, (_, x))| (k, x.into())).collect(),
                 path: file_path,
                 shell,
