@@ -1,4 +1,4 @@
-use std::{io::{BufWriter, Result, Write}, fs::File, path::Path};
+use std::{io::{BufWriter, Result, Write}, fs::{File, self}, path::Path};
 use hashbrown::HashMap;
 use crate::{visitor::{ConfHashMap, DbgValue, Value}, errors::LogicError};
 use flexar::prelude::Position;
@@ -31,6 +31,7 @@ pub fn check_value(pos: &Position, value: &DbgValue) {
 }
 
 pub fn generate(path: impl AsRef<Path>, table: &HashMap<Box<str>, Value>) -> Result<()> {
+    let _ = fs::create_dir_all(path.as_ref().parent().unwrap_or(&Path::new("")));
     let mut buffer = BufWriter::new(File::create(path)?);
     for (i, (k, x)) in table.iter().enumerate() {
         buffer.write_all(format!("\"{k}\"").as_bytes())?;

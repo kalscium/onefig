@@ -1,8 +1,9 @@
-use std::{io::{BufWriter, Result, Write}, fs::File, path::Path};
+use std::{io::{BufWriter, Result, Write}, fs::{File, self}, path::Path};
 use hashbrown::HashMap;
 use crate::visitor::Value;
 
 pub fn generate(path: impl AsRef<Path>, table: &HashMap<Box<str>, Value>) -> Result<()> {
+    let _ = fs::create_dir_all(path.as_ref().parent().unwrap_or(&Path::new("")));
     let mut buffer = BufWriter::new(File::create(path)?);
     buffer.write_all(b"{config,pkgs,...}:")?;
     gen_table(table, &mut buffer)?;
