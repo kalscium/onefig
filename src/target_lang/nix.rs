@@ -18,7 +18,7 @@ fn gen_value(value: &Value, buffer: &mut BufWriter<File>) -> Result<()> {
         V::Int(x) => x.to_string(),
         V::String(x) => format!("\"{x}\""),
         V::Raw(x) => x.to_string(),
-        V::Path(x) => x.iter().map(|x| format!("\"{x}\"")).collect::<Vec<_>>().join("."),
+        V::Path(x) => x.join("."),
         V::List(x) => return gen_list(x, buffer),
         V::Table(x) => return gen_table(x, buffer),
     };
