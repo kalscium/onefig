@@ -51,4 +51,5 @@ flexar::compiler_error! {
     (RT010) "io error occured while reading contents of file": "occured while reading contents of `", "`";
     (RT011) "io error occured while searching for config files": "occured while searching `", "`";
     (RT012) "io error occured while copying configuration file": "occured while copying config-file `", "` to `", "`";
+    (RT013) "error occured while decompressing included file": "occured while decompressing `", "`";
 }

@@ -7,7 +7,7 @@ use crate::{safe_unwrap, lexer::Token, errors::{SyntaxError, RuntimeError}, visi
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ConffTree {
     pub conf_files: Box<[ConfFile]>,
-    pub include: Box<[(String, PathBuf)]>,
+    pub include: Box<[(Box<[u8]>, PathBuf)]>,
 }
 
 impl ConffTree {
@@ -61,6 +61,7 @@ impl ConffTree {
             conf_files: out.into_boxed_slice(),
             include: att.included.into_iter()
                 .map(|(path, target)| (safe_unwrap!(fs::read_to_string(&path) => RT008, path.to_string_lossy()), target))
+                .map(|(x, path)| (lz4_flex::block::compress_prepend_size(x.as_bytes()).into_boxed_slice(), path))
                 .collect(),
         }
     }
@@ -83,8 +84,10 @@ impl ConffTree {
 
         // Copy the included files
         for (contents, path) in self.include.iter() {
-            safe_unwrap!(fs::write(path, contents)
-                => RT009, path.to_string_lossy()
+            safe_unwrap!(fs::write(path,
+                safe_unwrap!(lz4_flex::block::decompress_size_prepended(contents)
+                    => RT013, path.to_string_lossy()
+                )) => RT009, path.to_string_lossy()
             );
         }
     }
