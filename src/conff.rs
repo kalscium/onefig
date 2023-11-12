@@ -69,7 +69,7 @@ impl ConffTree {
                             walk_dir(item.path(), target.join(item.file_name()), include);
                         }
                     } else {
-                        include.push((lz4_flex::block::compress_prepend_size(safe_unwrap!(fs::read_to_string(&path) => RT008, path.to_string_lossy()).as_bytes()).into_boxed_slice(), target));
+                        include.push((lz4_flex::block::compress_prepend_size(&safe_unwrap!(fs::read(&path) => RT008, path.to_string_lossy())).into_boxed_slice(), target));
                     }
                 }
             }
