@@ -69,7 +69,9 @@ impl ConffTree {
                             walk_dir(item.path(), target.join(item.file_name()), include);
                         }
                     } else if path.is_symlink() {
-                        walk_dir(safe_unwrap!(path.read_link() => RT008, path.to_string_lossy()), target, include);
+                        let sym_path = safe_unwrap!(path.read_link() => RT008, path.to_string_lossy());
+                        if !sym_path.exists() { return }; // skip invalid symbolic paths
+                        walk_dir(sym_path, target, include);
                     } else {
                         include.push((lz4_flex::block::compress_prepend_size(&safe_unwrap!(fs::read(&path) => RT008, path.to_string_lossy())).into_boxed_slice(), target));
                     }
