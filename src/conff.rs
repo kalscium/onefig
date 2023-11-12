@@ -2,7 +2,7 @@ use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader, Write}, fs::{F
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
-use crate::{safe_unwrap, lexer::Token, errors::{SyntaxError, RuntimeError}, visitor::{ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml, nix}};
+use crate::{safe_unwrap, lexer::Token, errors::{SyntaxError, RuntimeError}, visitor::{ActionTree, DbgValue, Value}, patt_unwrap, target_lang::{json, toml, nix}, recur};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ConffTree {
@@ -57,12 +57,27 @@ impl ConffTree {
             })
         }
 
+        // Collect Included files recursively
+        let mut include = Vec::new();
+        for (path, target) in att.included.into_iter() {
+            recur! {
+                walk_dir(path: PathBuf, target: PathBuf, include: &mut Vec<(Box<[u8]>, PathBuf)>) <- (path, target, &mut include) {
+                    if path.is_dir() {
+                        let dir = safe_unwrap!(fs::read_dir(&path) => RT014, path.to_string_lossy());
+                        for item in dir {
+                            let item = safe_unwrap!(item => RT015, path.to_string_lossy());
+                            walk_dir(item.path(), target.join(item.file_name()), include);
+                        }
+                    } else {
+                        include.push((lz4_flex::block::compress_prepend_size(safe_unwrap!(fs::read_to_string(&path) => RT008, path.to_string_lossy()).as_bytes()).into_boxed_slice(), target));
+                    }
+                }
+            }
+        }
+
         Self {
             conf_files: out.into_boxed_slice(),
-            include: att.included.into_iter()
-                .map(|(path, target)| (safe_unwrap!(fs::read_to_string(&path) => RT008, path.to_string_lossy()), target))
-                .map(|(x, path)| (lz4_flex::block::compress_prepend_size(x.as_bytes()).into_boxed_slice(), path))
-                .collect(),
+            include: include.into_boxed_slice(),
         }
     }
 

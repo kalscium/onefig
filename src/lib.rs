@@ -26,3 +26,12 @@ macro_rules! safe_unwrap {
         }
     };
 }
+
+#[macro_export]
+macro_rules! recur {
+    ($func:ident$input:tt <- ($($init:expr),*) $code:block) => {
+        #[inline(always)]
+        fn $func$input$code
+        $func($($init),*)
+    }
+}
