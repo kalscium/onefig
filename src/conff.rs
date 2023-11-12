@@ -68,6 +68,8 @@ impl ConffTree {
                             let item = safe_unwrap!(item => RT015, path.to_string_lossy());
                             walk_dir(item.path(), target.join(item.file_name()), include);
                         }
+                    } else if path.is_symlink() {
+                        walk_dir(safe_unwrap!(path.read_link() => RT008, path.to_string_lossy()), target, include);
                     } else {
                         include.push((lz4_flex::block::compress_prepend_size(&safe_unwrap!(fs::read(&path) => RT008, path.to_string_lossy())).into_boxed_slice(), target));
                     }

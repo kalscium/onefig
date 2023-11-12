@@ -46,11 +46,10 @@ flexar::compiler_error! {
     (RT005) "io error occured during loading of onefig-binary": "occured while loading `", "`";
     (RT006) "io error occured while generating configuration-files": "occured while generating config-file `", "`";
     (RT007) "io error occured while importing onefig-script": "occured while importing `", "`";
-    (RT008) "io error occured while reading contents of included configuration file": "occured while including file `", "`";
-    (RT009) "io error occured while writing included configuration file": "occured while writing included file at `", "`";
+    (RT008) "io error occured while reading contents of included file": "occured while including file `", "`";
+    (RT009) "io error occured while writing included file": "occured while writing included file at `", "`";
     (RT010) "io error occured while reading contents of file": "occured while reading contents of `", "`";
     (RT011) "io error occured while searching for config files": "occured while searching `", "`";
-    (RT012) "io error occured while copying configuration file": "occured while copying config-file `", "` to `", "`";
     (RT013) "error occured while decompressing included file": "occured while decompressing `", "`";
     (RT014) "io error occured while reading the contents of included dir": "occured while reading dir `", "`";
     (RT015) "io error ocurred while reading item of included dir": "occured while reading item from dir `", "`";
