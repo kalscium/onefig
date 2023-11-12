@@ -1,4 +1,4 @@
-use std::{path::PathBuf, mem::replace, io::{BufWriter, BufReader, Write}, fs::{File, self}, process::Command};
+use std::{path::{PathBuf, Path}, mem::replace, io::{BufWriter, BufReader, Write}, fs::{File, self}, process::Command};
 use flexar::{prelude::*, compile_error::CompileError};
 use hashbrown::HashMap;
 use serde::{Serialize, Deserialize};
@@ -99,6 +99,7 @@ impl ConffTree {
 
         // Copy the included files
         for (contents, path) in self.include.iter() {
+            let _ = fs::create_dir_all(path.parent().unwrap_or(Path::new("")));
             safe_unwrap!(fs::write(path,
                 safe_unwrap!(lz4_flex::block::decompress_size_prepended(contents)
                     => RT013, path.to_string_lossy()
