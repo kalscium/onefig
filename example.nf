@@ -13,7 +13,7 @@ conff json dave: "dave.json";
 
 # dave.dog.owner = dave; // should throw error (cause json target)
 
-dave.dog: {
+@dave.dog: { // ignores the entire dave.dog object
     name = "Biscut"; // should throw error
     age = 5;
 }

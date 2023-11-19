@@ -16,6 +16,7 @@ flexar::lexer! {
         LTE => "<=";
         LT => '<';
         Glob => '*';
+        Ignore => '@';
 
         Shell(_command: Box<[Box<str>]>) => "<shell command>";
         RawConf(_conf: Box<str>) => "<raw configuration>";
@@ -45,6 +46,7 @@ flexar::lexer! {
     [" \n\t"] >> ({ lext.advance(); lext = lext.spawn(); continue 'cycle; });
     Dot: .;
     Glob: *;
+    Ignore: @;
 
     // Multi-char
     EE: (= =);

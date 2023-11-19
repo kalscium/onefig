@@ -19,6 +19,7 @@ pub enum Stmt {
         file_path: Node<Atom>,
         target_path: Node<Atom>,
     },
+    Ignore,
 }
 
 flexar::parser! {
@@ -46,6 +47,7 @@ flexar::parser! {
 
         (Var), [path: Path::parse] => (Var(path));
         (Import), [atom: Atom::parse] => (Import(atom));
+        (Ignore), [_stmt: Stmt::parse] => (Ignore);
     } else Err(SY007: parxt.current_token());
 }
 
@@ -85,6 +87,7 @@ impl VisitConfig for Node<Stmt> {
                 Atom::Str(x) => PathBuf::from(x.to_string()),
                 _ => compiler_error!((SY404, target_path.position.clone())).throw(),
             })),
+            S::Ignore => (),
         }
     }
 }
