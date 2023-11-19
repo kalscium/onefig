@@ -2,6 +2,19 @@
 > One configuration file; all the configurations you need.
 Onefig eliminates the clutter of multiple configuration files, a common issue in Unix-based systems, particularly NixOS. By consolidating configuration settings into a single language and a single file or directory, Onefig enhances organization, control over system features, and true reproducibility of such system.
 
+# Installation
+---
+You will need:
+- a `cargo` installation
+- a `unix` operating system *(currently)*
+
+Installation:
+1. run `cargo install onefig` to install
+2. add `$HOME/.cargo/bin` to your path if you haven't already
+    - You can do this by setting the `PATH` varible to `$HOME/.cargo/bin:$PATH`
+3. run `onefig test` to test if everything is working correctly
+4. now run `onefig --help` for help using the cli :D
+
 # Language Features
 ---
 Onefig is designed to be both simple and concise and yet flexable enough to incorporate the features of the most common configuration langauges; this is reflected within the features of the language.
