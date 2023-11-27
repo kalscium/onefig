@@ -91,7 +91,7 @@ flexar::lexer! {
                         done RawConf(conf.into_boxed_str());
                     };
                     { conf.push_str(section.trim()) };
-                    { conf.push('\n') };
+                    { conf.push_str("\\n") };
                     { section = String::new() };
                     advance:();
                     { continue 'raw };
@@ -188,22 +188,22 @@ flexar::lexer! {
                 advance: current;
                 ck (current, 'n') {
                     advance:();
-                    { string.push('\n') };
+                    { string.push_str("\\n") };
                     { continue 'string };
                 };
                 ck (current, 't') {
                     advance:();
-                    { string.push('\t') };
+                    { string.push_str("\\t") };
                     { continue 'string };
                 };
                 ck (current, '\\') {
                     advance:();
-                    { string.push('\\') };
+                    { string.push_str("\\\\") };
                     { continue 'string };
                 };
                 ck (current, '"') {
                     advance:();
-                    { string.push('"') };
+                    { string.push_str("\\\"") };
                     { continue 'string };
                 };
                 { return flexar::compiler_error!((SY003, child.spawn().position()) current).throw() };
@@ -226,22 +226,22 @@ flexar::lexer! {
                 advance: current;
                 ck (current, 'n') {
                     advance:();
-                    { string.push('\n') };
+                    { string.push_str("\\n") };
                     { continue 'string };
                 };
                 ck (current, 't') {
                     advance:();
-                    { string.push('\t') };
+                    { string.push_str("\\t") };
                     { continue 'string };
                 };
                 ck (current, '\\') {
                     advance:();
-                    { string.push('\\') };
+                    { string.push_str("\\\\") };
                     { continue 'string };
                 };
                 ck (current, '\'') {
                     advance:();
-                    { string.push('\'') };
+                    { string.push_str("\\'") };
                     { continue 'string };
                 };
                 { return flexar::compiler_error!((SY003, child.spawn().position()) current).throw() };
