@@ -18,7 +18,7 @@ conff json dave: "dave.json";
     age = 5;
 }
 
-dave.dog.favourite-treats = [ "cookies", "steaks" ];
+dave.dog.favourite-treats = [ "cookie\"s\"", "steaks" ];
 
 import "example2.nf"; // Imports stewart from the other onefig script
 include "Cargo.toml" as "Cargo.toml"; // as an example it'll include this project's `Cargo.toml` file
